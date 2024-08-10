@@ -1,4 +1,4 @@
-import { ShaderNode } from "../../ShaderNode"
+import { BuiltIn, ShaderNode } from "../../ShaderNode"
 import { ShaderDataType } from "../../data_types"
 
 /**
@@ -6,8 +6,8 @@ import { ShaderDataType } from "../../data_types"
  */
 export class PerlinNoiseNode extends ShaderNode {
   constructor(id: string) {
-    super(id, "Math_PerlinNoise")
-    this.addInSocket("uv", ShaderDataType.Vector2)
+    super(id, "Noise_PerlinNoise", [BuiltIn.UV])
+    this.addInSocket("offset", ShaderDataType.Vector2)
     this.addInSocket("s", ShaderDataType.Float)
     this.setUniformValue(1, 10)
     this.addOutSocket("o", ShaderDataType.Float)
@@ -77,7 +77,7 @@ float cnoise(vec2 P)
     const i1 = this.getInSocket(1).getVarName()
     const o = this.getOutSocket(0).getVarName()
     return `
-    float ${o} = cnoise(${i0} * ${i1});
+    float ${o} = cnoise((vUv + ${i0}) * ${i1});
     `
   }
 }

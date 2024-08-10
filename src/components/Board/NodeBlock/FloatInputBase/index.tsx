@@ -5,7 +5,8 @@ import {
   useRef,
   useState,
   KeyboardEventHandler,
-  ChangeEventHandler
+  ChangeEventHandler,
+  useEffect
  } from "react"
 import style from "./style.module.scss"
 import {
@@ -31,6 +32,57 @@ export function FloatInputBase({
   const [typing, setTyping] = useState(false)
   const inputRef = useRef<HTMLInputElement | null>(null)
   const [textValue, setTextValue] = useState("")
+  const numberAreaRef = useRef<HTMLDivElement | null>(null)
+  const isDraggingValueRef = useRef(false)
+  const valueRef = useRef(value)
+  valueRef.current = value
+  const [_, forceUpdate] = useState(0)
+
+  useEffect(() => {
+    if (!numberAreaRef.current) return
+    let mouseIsDown = false
+    let mouseDownX = 0
+    let valueAtMouseDown = 0
+
+    function mouseMove (e: MouseEvent) {
+      if (!mouseIsDown) {
+        return
+      }
+      isDraggingValueRef.current = true
+      const delta = e.clientX - mouseDownX
+      const v = valueAtMouseDown + delta * DELTA
+      emitOnChange(v)
+    }
+    function mouseDown (e: MouseEvent) {
+      mouseIsDown = true
+      mouseDownX = e.clientX
+      valueAtMouseDown = valueRef.current
+    }
+    function mouseUp (e: MouseEvent) {
+      mouseIsDown = false
+      if (isDraggingValueRef.current) {
+        isDraggingValueRef.current = false
+        forceUpdate(new Date().getTime())
+      } else {
+        if (e.target === numberAreaRef.current || numberAreaRef.current?.contains(e.target as Node)) {
+          setTyping(true)
+          if (inputRef.current) {
+            inputRef.current.focus()
+            setTextValue(value.toFixed(5).replace(/\.?0+$/, ""))
+          }
+        }
+      }
+    }
+    window.document.addEventListener("mousemove", mouseMove)
+    window.document.addEventListener("mouseup", mouseUp, { capture: false })
+    numberAreaRef.current.addEventListener("mousedown", mouseDown)
+
+    return () => {
+      window.document.removeEventListener("mousemove", mouseMove)
+      window.document.removeEventListener("mouseup", mouseUp)
+      numberAreaRef.current?.removeEventListener("mousedown", mouseDown)
+    }
+  }, [numberAreaRef])
 
   const emitOnChange = useCallback((v: number) => {
     if (v > MAX_VALUE) {
@@ -53,14 +105,6 @@ export function FloatInputBase({
   const displayValue = useMemo(() => {
     return value.toFixed(MAX_DECIMAL_PLACES)
   }, [value])
-
-  const onNumberClick: MouseEventHandler<HTMLDivElement> = useCallback((e) => {
-    setTyping(true)
-    if (inputRef.current) {
-      inputRef.current.focus()
-      setTextValue(value.toFixed(5).replace(/\.?0+$/, ""))
-    }
-  }, [setTyping, inputRef.current, value, setTextValue])
 
   const onTextInputComplete = useCallback(() => {
     setTyping(false)
@@ -91,33 +135,35 @@ export function FloatInputBase({
 
   return (
     <div className={style.frame}>
-      {!typing && (
+      <div
+        className={classNames({
+          [style.gauge]: true,
+          [style.dragging]: isDraggingValueRef.current,
+          [style.typing]: typing
+        })}
+        onMouseDown={e => e.stopPropagation()}
+      >
         <div
-          className={style.guage}
-          onMouseDown={e => e.stopPropagation()}
+          className={classNames(style.arrow, style.left)}
+          data-value={- DELTA}
+          onClick={onArrowClick}
         >
-          <div
-            className={classNames(style.arrow, style.left)}
-            data-value={- DELTA}
-            onClick={onArrowClick}
-          >
-            <LeftArrowIcon />
-          </div>
-          <div
-            className={style.text}
-            onClick={onNumberClick}
-          >
-            <span>{displayValue}</span>
-          </div>
-          <div
-            className={classNames(style.arrow, style.right)}
-            data-value={DELTA}
-            onClick={onArrowClick}
-          >
-            <RightArrowIcon />
-          </div>
+          <LeftArrowIcon />
         </div>
-      )}
+        <div
+          className={style.text}
+          ref={numberAreaRef}
+        >
+          <span>{displayValue}</span>
+        </div>
+        <div
+          className={classNames(style.arrow, style.right)}
+          data-value={DELTA}
+          onClick={onArrowClick}
+        >
+          <RightArrowIcon />
+        </div>
+      </div>
       <div
         className={style.inputContainer}
         style={{

@@ -18,9 +18,7 @@ export type Uniform = {
 
 export enum BuiltIn {
   VertexPositon = "VertPosition",
-  Normal = "normal",
   UV = "uv",
-  DirectionalLight = "DirectionalLight",
 }
 
 export class UniformValueNotSetError extends Error {}

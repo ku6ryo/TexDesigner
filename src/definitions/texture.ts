@@ -2,6 +2,7 @@ import { NodeTypeId } from "./NodeTypeId"
 import {
   NodeCategory, NodeColor, NodeDefinition, NodeInputType,
 } from "./types"
+import { Vector2 } from "../backend/math/Vector2"
 
 export const textureCategory: NodeCategory = {
   id: "texture",
@@ -11,6 +12,7 @@ export const textureCategory: NodeCategory = {
 }
 
 export const textureDefs: NodeDefinition[] = [{
+/*
   id: NodeTypeId.TextureSample,
   name: "Sample",
   category: textureCategory,
@@ -23,11 +25,16 @@ export const textureDefs: NodeDefinition[] = [{
     label: "Color",
   }],
 }, {
+*/
   id: NodeTypeId.TexturePerlinNoise,
   name: "Parlin Noise",
   category: textureCategory,
   inSockets: [{
-    label: "UV",
+    label: "Offset",
+    alternativeValueInputType: NodeInputType.Vector2,
+    alternativeValue: {
+      vec2: new Vector2(0, 0),
+    },
   }, {
     label: "Scale",
     alternativeValueInputType: NodeInputType.Float,
@@ -36,14 +43,18 @@ export const textureDefs: NodeDefinition[] = [{
     },
   }],
   outSockets: [{
-    label: "Color",
+    label: "Value",
   }],
 }, {
   id: NodeTypeId.TextureVolonoi,
   name: "Volonoi",
   category: textureCategory,
   inSockets: [{
-    label: "UV",
+    label: "Offset",
+    alternativeValueInputType: NodeInputType.Vector2,
+    alternativeValue: {
+      vec2: new Vector2(0, 0),
+    },
   }, {
     label: "Scale",
     alternativeValueInputType: NodeInputType.Float,

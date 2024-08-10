@@ -11,7 +11,7 @@ export const outputCategory: NodeCategory = {
 
 export const outputDefs = [{
   id: NodeTypeId.OutputColor,
-  name: "Fragment Color",
+  name: "Output",
   category: outputCategory,
   inSockets: [{
     label: "Color",

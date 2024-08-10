@@ -3,7 +3,7 @@ import { Board } from "./components/Board";
 import { NodeProps, WireProps } from "./components/Board/types";
 import { definitions } from "./definitions";
 import { createGraphFromInputs } from "./backend/createGraphFromInputs";
-import { useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { CircularReferenceError, IncompatibleSocketConnectionError, ShaderGraph } from "./backend/ShaderGraph";
 import { RiNodeTree as NodeIcon } from "react-icons/ri"
 import packageJson from "../package.json"
@@ -14,18 +14,31 @@ import "../node_modules/@blueprintjs/popover2/lib/css/blueprint-popover2.css"
 import { UniformValueNotSetError } from "./backend/ShaderNode";
 import { NodeInputValue } from "./definitions/types";
 import { TexRenderer } from "./TexRenderer";
+import { throttle } from "throttle-debounce";
 
 export function App() {
 
-  const [graph, setGraph] = useState<ShaderGraph | null>(null)
+  const graphRef = useRef<ShaderGraph | null>(null)
   const toasterRef = useRef<Toaster>(null)
   const [invalidWireId, setInvalidaWireId] = useState<string | null>(null)
   const version = packageJson.version;
+  const outputContainerRef = useRef<HTMLDivElement>(null)
+  const texRenderer = useMemo(() => {
+    const r = new TexRenderer()
+    r.setSize(2048, 2048)
+    return r
+  }, [])
+  const throttledRender = throttle(100, () => texRenderer.render())
+  useEffect(() => {
+    if (outputContainerRef.current) {
+      outputContainerRef.current.appendChild(texRenderer.canvas)
+    }
+  }, [outputContainerRef.current])
 
   const onChange = (nodes: NodeProps[], wires: WireProps[]) => {
     try {
       const graph = createGraphFromInputs(nodes, wires)
-      setGraph(graph)
+      graphRef.current = graph
       setInvalidaWireId(null)
       if (invalidWireId) {
         toasterRef.current?.show({
@@ -34,15 +47,8 @@ export function App() {
           intent: "success",
         })
       }
-      const texRenderer = new TexRenderer()
-      texRenderer.setSize(100, 100)
       texRenderer.setGraph(graph)
-      texRenderer.render()
-      texRenderer.canvas.style.position = "absolute"
-      texRenderer.canvas.style.top = "0px"
-      texRenderer.canvas.style.left = "0px"
-      texRenderer.canvas.style.zIndex = new Date().getTime().toString()
-      document.body.appendChild(texRenderer.canvas)
+      throttledRender()
     } catch (e) {
       console.error(e)
       if (toasterRef.current) {
@@ -90,18 +96,13 @@ export function App() {
   }
 
   const onInSocketValueChange = (nodeId: string, socketIndex: number, value: NodeInputValue) => {
-    if (graph && graph.hasNode(nodeId)) {
+    if (!graphRef.current) {
+      return
+    }
+    const graph = graphRef.current
+    if (graph.hasNode(nodeId)) {
       graph.setInputValue(nodeId, socketIndex, value)
-      const texRenderer = new TexRenderer()
-      texRenderer.setSize(100, 100)
-      texRenderer.setGraph(graph)
-      texRenderer.render()
-      texRenderer.canvas.style.position = "absolute"
-      texRenderer.canvas.style.top = "0px"
-      texRenderer.canvas.style.left = "0px"
-      texRenderer.canvas.style.zIndex = new Date().getTime().toString()
-      document.body.appendChild(texRenderer.canvas)
-
+      throttledRender()
     }
   }
 
@@ -112,6 +113,7 @@ export function App() {
         <div className={style.versions}>
           <span>{`v${version}`}</span>
         </div>
+        <div ref={outputContainerRef} className={style.output}/>
       </div>
       <div className={style.board}>
         <Board

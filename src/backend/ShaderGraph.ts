@@ -287,9 +287,6 @@ ${main}
     if (builtInMap.get(BuiltIn.UV)) {
       header += "varying vec2 vUv;\n"
     }
-    if (builtInMap.get(BuiltIn.Normal)) {
-      header += "varying vec3 vNormal;\n"
-    }
     if (builtInMap.get(BuiltIn.VertexPositon)) {
       header += "varying vec3 vPosition;\n"
     }

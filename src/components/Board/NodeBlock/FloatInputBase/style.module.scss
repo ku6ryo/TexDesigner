@@ -29,10 +29,14 @@
   }
 }
 
-.guage {
+.gauge {
   color: #ccc;
   position: relative;
   width: 100%;
+
+  &.typing {
+    display: none;
+  }
 
   .text {
     margin: 0 20px;
@@ -60,6 +64,18 @@
     &.right {
       right: 0;
       top: 0;
+    }
+  }
+
+  &.dragging {
+    .text {
+      color:rgb(255, 181, 97);
+    }
+    .text:hover {
+      background-color: transparent;
+    }
+    .arrow:hover {
+      background-color: transparent;
     }
   }
 }

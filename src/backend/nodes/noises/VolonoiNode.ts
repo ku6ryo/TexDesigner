@@ -1,10 +1,10 @@
-import { ShaderNode } from "../../ShaderNode"
+import { BuiltIn, ShaderNode } from "../../ShaderNode"
 import { ShaderDataType } from "../../data_types"
 
 export class VolonoiNode extends ShaderNode {
   constructor(id: string) {
-    super(id, "Noise_Volonoi")
-    this.addInSocket("uv", ShaderDataType.Vector2)
+    super(id, "Noise_Volonoi", [BuiltIn.UV])
+    this.addInSocket("offset", ShaderDataType.Vector2)
     this.addInSocket("s", ShaderDataType.Float)
     this.setUniformValue(1, 10)
     this.addInSocket("r", ShaderDataType.Float)
@@ -44,7 +44,7 @@ float volonoi(vec2 uv, float scale, float randomness) {
     const i2 = this.getInSocket(2).getVarName()
     const o = this.getOutSocket(0).getVarName()
     return `
-    float ${o} = volonoi(${i0}, ${i1}, ${i2});
+    float ${o} = volonoi(vUv + ${i0}, ${i1}, ${i2});
     `
   }
 }

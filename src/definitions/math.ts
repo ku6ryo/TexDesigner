@@ -16,12 +16,12 @@ export const mathDefs: NodeDefinition[] = [{
   name: "Add",
   category: mathCategory,
   inSockets: [{
-    label: "Value",
+    label: "a",
   }, {
-    label: "Value",
+    label: "b",
   }],
   outSockets: [{
-    label: "Result",
+    label: "a + b",
   }],
 }, {
   id: NodeTypeId.MathSine,
@@ -132,24 +132,24 @@ export const mathDefs: NodeDefinition[] = [{
   name: "Subtract",
   category: mathCategory,
   inSockets: [{
-    label: "Value",
+    label: "a",
   }, {
-    label: "Value",
+    label: "b",
   }],
   outSockets: [{
-    label: "Result",
+    label: "a - b",
   }],
 }, {
   id: NodeTypeId.MathMultiply,
   name: "Multiply",
   category: mathCategory,
   inSockets: [{
-    label: "Value",
+    label: "a",
   }, {
-    label: "Value",
+    label: "b",
   }],
   outSockets: [{
-    label: "Result",
+    label: "a * b",
   }],
 }, {
   id: NodeTypeId.MathCombine,
@@ -157,22 +157,38 @@ export const mathDefs: NodeDefinition[] = [{
   category: mathCategory,
   inSockets: [{
     label: "R",
+    alternativeValueInputType: NodeInputType.Float,
+    alternativeValue: {
+      float: 0,
+    },
   }, {
     label: "G",
+    alternativeValueInputType: NodeInputType.Float,
+    alternativeValue: {
+      float: 0,
+    },
   }, {
     label: "B",
+    alternativeValueInputType: NodeInputType.Float,
+    alternativeValue: {
+      float: 0,
+    },
   }, {
     label: "A",
+    alternativeValueInputType: NodeInputType.Float,
+    alternativeValue: {
+      float: 0,
+    },
   }],
   outSockets: [{
-    label: "Vec",
+    label: "Color",
   }],
 }, {
   id: NodeTypeId.MathSeparate,
   name: "Separate",
   category: mathCategory,
   inSockets: [{
-    label: "Vec",
+    label: "Color",
   }],
   outSockets: [{
     label: "R",
