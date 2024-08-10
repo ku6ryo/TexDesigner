@@ -1,0 +1,65 @@
+
+.frame {
+  background-color: #3c3c3c;
+  font-size: 12px;
+  line-height: 1;
+  position: relative;
+  width: 100%;
+}
+
+.inputContainer {
+  overflow: hidden;
+  .input {
+    background-color: #222;
+    border: none;
+    color: rgb(255, 181, 97);
+    font-size: 10px;
+    font-family: Titillum;
+    height: 20px;
+    line-height: 1;
+    outline: none;
+    padding: 4px;
+    width: 100%;
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+  }
+}
+
+.guage {
+  color: #ccc;
+  position: relative;
+  width: 100%;
+
+  .text {
+    margin: 0 20px;
+    padding: 4px;
+
+    &:hover {
+      background-color: #999;
+    }
+  }
+
+  .arrow {
+    cursor: pointer;
+    position: absolute;
+    padding: 4px 2px;
+    border: none;
+
+    &:hover {
+      background-color: #999;
+    }
+
+    &.left {
+      left: 0;
+      top: 0;
+    }
+    &.right {
+      right: 0;
+      top: 0;
+    }
+  }
+}

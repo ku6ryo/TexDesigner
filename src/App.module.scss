@@ -1,0 +1,66 @@
+$SIDEBAR_WIDTH: 308px;
+
+.board {
+  height: 100vh;
+  position: fixed;
+  bottom: 0;
+  left: $SIDEBAR_WIDTH;
+  width: calc(100vw - $SIDEBAR_WIDTH);
+}
+
+.sidebar {
+  background-color: #111;
+  height: 100vh;
+  left: 0;
+  position: fixed;
+  top: 0;
+  width: $SIDEBAR_WIDTH;
+
+  .title {
+    color: white;
+    font-family: 'Titillium';
+    font-weight: bold;
+    font-size: 14px;
+    padding: 8px 4px 4px;
+    text-align: center;
+
+    svg {
+      position: relative;
+      top: 2px;
+    }
+  }
+
+  .versions {
+    color: white;
+    font-size: 10px;
+    margin: 0 4px 8px;
+    text-align: center;
+  }
+}
+
+.preview {
+  margin: 0 4px;
+}
+
+.codeModal {
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  height: 100vh;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  position: fixed;
+  width: 100vw;
+  z-index: 100000;
+
+  .codeContainer {
+    display: inline-block;
+    max-width: 50%;
+    max-height: 90%;
+    overflow: scroll;
+  }
+
+  pre {
+    display: inline-block;
+  }
+}

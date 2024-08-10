@@ -1,0 +1,34 @@
+.frame {
+  background-color: rgb(32, 32, 32);
+  background-size: 12px 12px;
+  font-family: Titillium;
+  height: 100%;
+  position: relative;
+  width: 100%;
+}
+
+.board {
+  height: 100%;
+  position: relative;
+  width: 100%;
+
+  &.grabbing {
+    cursor: grabbing;
+  }
+}
+
+.boardPattern {
+  fill: rgb(36, 36, 36);
+}
+
+.zoomSlider {
+  bottom: 20px;
+  position: absolute;
+  right: 20px;
+}
+
+.nodeSelector {
+  position: absolute;
+  left: 10px;
+  top: 10px;
+}
