@@ -1,5 +1,5 @@
 import { useCallback, memo } from "react"
-import { Vector3 } from "three"
+import { Vector3 } from "../../../../backend/math/Vector3"
 import { NodeInputValue } from "../../../../definitions/types"
 import { FloatInputBase } from "../FloatInputBase"
 

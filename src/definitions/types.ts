@@ -1,9 +1,6 @@
-import {
-  Vector2,
-  Vector3,
-  Vector4,
-  Texture,
-} from "three"
+import { Vector2 } from "../backend/math/Vector2"
+import { Vector3 } from "../backend/math/Vector3"
+import { Vector4 } from "../backend/math/Vector4"
 import { NodeTypeId } from "./NodeTypeId"
 
 export enum NodeColor {
@@ -38,7 +35,7 @@ export type NodeInputValue = {
   vec2?: Vector2,
   vec3?: Vector3,
   vec4?: Vector4,
-  image?: Texture,
+  image?: HTMLImageElement
 }
 
 export function cloneNodeInputValue(v: NodeInputValue) {
@@ -47,7 +44,7 @@ export function cloneNodeInputValue(v: NodeInputValue) {
     vec2: v.vec2 ? v.vec2.clone() : undefined,
     vec3: v.vec3 ? v.vec3.clone() : undefined,
     vec4: v.vec4 ? v.vec4.clone() : undefined,
-    image: v.image ? v.image.clone() : undefined,
+    image: v.image ? v.image.cloneNode() : undefined,
   }
 }
 

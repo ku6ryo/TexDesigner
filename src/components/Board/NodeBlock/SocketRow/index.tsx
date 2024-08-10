@@ -4,7 +4,9 @@ import style from "./style.module.scss"
 import { FloatInput } from "../FloatInput"
 import { ImageInput } from "../ImageInput"
 import { ColorInput } from "../ColorInput"
+import { Vector2Input } from "../Vector2Input"
 import { Vector3Input } from "../Vector3Input"
+import { Vector4Input } from "../Vector4Input"
 import { SocketDirection } from "../types"
 import classnames from "classnames"
 
@@ -113,8 +115,14 @@ export const SocketRow = memo(function ({
           {valueInputType === NodeInputType.Color && (
             <ColorInput onChange={onValueChange} value={value} />
           )}
+          {valueInputType === NodeInputType.Vector2 && (
+            <Vector2Input onChange={onValueChange} value={value} />
+          )}
           {valueInputType === NodeInputType.Vector3 && (
             <Vector3Input onChange={onValueChange} value={value} />
+          )}
+          {valueInputType === NodeInputType.Vector4 && (
+            <Vector4Input onChange={onValueChange} value={value} />
           )}
         </div>
       )}

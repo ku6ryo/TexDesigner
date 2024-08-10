@@ -2,7 +2,7 @@ import { useCallback, memo, useState, MouseEventHandler, useEffect } from "react
 import { NodeInputValue } from "../../../../definitions/types"
 import style from "./style.module.scss"
 import { ChromePicker, ColorChangeHandler } from "react-color"
-import { Vector4 } from "three"
+import { Vector4 } from "../../../../backend/math/Vector4"
 
 type Props = {
   value: NodeInputValue,

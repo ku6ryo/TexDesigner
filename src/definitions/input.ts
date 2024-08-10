@@ -1,8 +1,10 @@
-import { Vector3, Vector4 } from "three"
 import { NodeTypeId } from "./NodeTypeId"
 import {
   NodeCategory, NodeInputType, NodeColor, NodeDefinition,
 } from "./types"
+import { Vector2 } from "../backend/math/Vector2"
+import { Vector3 } from "../backend/math/Vector3"
+import { Vector4 } from "../backend/math/Vector4"
 
 export const inputCategory: NodeCategory = {
   id: "input",
@@ -12,6 +14,7 @@ export const inputCategory: NodeCategory = {
 }
 
 export const inputDefs: NodeDefinition[] = [{
+/*
   id: NodeTypeId.InputUv,
   name: "UV",
   category: inputCategory,
@@ -60,6 +63,20 @@ export const inputDefs: NodeDefinition[] = [{
     label: "Texture",
   }],
 }, {
+*/
+  id: NodeTypeId.InputTextureSampling,
+  name: "Texture",
+  category: inputCategory,
+  inSockets: [{
+    label: "Image",
+    alternativeValueInputType: NodeInputType.Image,
+    alternativeValue: {},
+    socketHidden: true,
+  }],
+  outSockets: [{
+    label: "Color",
+  }],
+}, {
   id: NodeTypeId.InputFloat,
   name: "Float",
   category: inputCategory,
@@ -75,6 +92,21 @@ export const inputDefs: NodeDefinition[] = [{
     label: "Value",
   }],
 }, {
+  id: NodeTypeId.InputVector2,
+  name: "Vector 2",
+  category: inputCategory,
+  inSockets: [{
+    label: "Value",
+    alternativeValueInputType: NodeInputType.Vector2,
+    alternativeValue: {
+      vec2: new Vector2(0, 0),
+    },
+    socketHidden: true,
+  }],
+  outSockets: [{
+    label: "Vector",
+  }],
+}, {
   id: NodeTypeId.InputVector3,
   name: "Vector 3",
   category: inputCategory,
@@ -83,6 +115,21 @@ export const inputDefs: NodeDefinition[] = [{
     alternativeValueInputType: NodeInputType.Vector3,
     alternativeValue: {
       vec3: new Vector3(0, 0, 0),
+    },
+    socketHidden: true,
+  }],
+  outSockets: [{
+    label: "Vector",
+  }],
+}, {
+  id: NodeTypeId.InputVector4,
+  name: "Vector 4",
+  category: inputCategory,
+  inSockets: [{
+    label: "Value",
+    alternativeValueInputType: NodeInputType.Vector4,
+    alternativeValue: {
+      vec2: new Vector4(0, 0, 0, 0),
     },
     socketHidden: true,
   }],

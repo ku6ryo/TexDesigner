@@ -1,4 +1,4 @@
-import { Vector3 } from "three"
+import { Vector3 } from "../../math/Vector3"
 import { ShaderNode } from "../../ShaderNode"
 import { ShaderDataType } from "../../data_types"
 

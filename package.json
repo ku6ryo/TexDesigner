@@ -1,5 +1,5 @@
 {
-  "name": "three-shader-graph",
+  "name": "tex-designer",
   "version": "0.0.1-beta",
   "scripts": {
     "build": "vite build",
@@ -17,31 +17,17 @@
     "@types/react-color": "^3.0.6",
     "@types/react-dom": "^17.0.14",
     "@types/stats.js": "^0.17.0",
-    "@types/three": "^0.138.0",
     "@vitejs/plugin-react": "^1.2.0",
     "classnames": "^2.3.1",
-    "lil-gui": "^0.16.1",
-    "react": "^18.0.0",
+    "react": "^18.3.1",
     "react-color": "^2.19.3",
-    "react-dom": "^18.0.0",
+    "react-dom": "^18.3.1",
     "react-icons": "^4.3.1",
-    "react-syntax-highlighter": "^15.5.0",
     "sass": "^1.49.9",
     "short-uuid": "^4.2.0",
     "stats.js": "^0.17.0",
-    "three": "^0.138.3",
     "typescript": "^4.5.5",
     "vite": "^2.8.6"
   },
-  "devDependencies": {
-    "@types/react-syntax-highlighter": "^13.5.2",
-    "@typescript-eslint/eslint-plugin": "^5.16.0",
-    "@typescript-eslint/parser": "^5.16.0",
-    "eslint": "^8.11.0",
-    "eslint-config-airbnb": "^19.0.4",
-    "eslint-plugin-import": "^2.25.4",
-    "eslint-plugin-jsx-a11y": "^6.5.1",
-    "eslint-plugin-react": "^7.29.4",
-    "eslint-plugin-react-hooks": "^4.3.0"
-  }
+  "devDependencies": {}
 }

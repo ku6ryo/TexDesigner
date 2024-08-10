@@ -17,14 +17,13 @@ import { SubtractNode } from "./nodes/math/SubtractNode"
 import { FracNode } from "./nodes/math/FracNode"
 import { MultiplyNode } from "./nodes/math/MultiplyNode"
 import { TextureInputNode } from "./nodes/inputs/TextureInputNode"
+import { TextureSamplingInputNode } from "./nodes/inputs/TextureSamplingInputNode"
 import { SampleTextureNode } from "./nodes/texture/SampleTextureNode"
 import { TimeInputNode } from "./nodes/inputs/TimeInputNode"
 import { CombineNode } from "./nodes/math/CombineNode"
 import { SeparateNode } from "./nodes/math/SeparateNode"
 import { GreaterThanNode } from "./nodes/math/GreaterThanNode"
 import { LessThanNode } from "./nodes/math/LessThanNode"
-import { LambertNode } from "./nodes/materials/LambertNode"
-import { PhongNode } from "./nodes/materials/PhongNode"
 import { ColorInputNode } from "./nodes/inputs/ColorInputNode"
 import { VertexPositionNode } from "./nodes/inputs/VertexPositionNode"
 import { VectorRotateNode } from "./nodes/math/VectorRotateNode"
@@ -34,7 +33,6 @@ import { ClampNode } from "./nodes/math/ClampNode"
 import { ArcsineNode } from "./nodes/math/ArcsineNode"
 import { ArctangentNode } from "./nodes/math/ArctangentNode"
 import { ArccosineNode } from "./nodes/math/ArccosineNode"
-import { PhysicalNode } from "./nodes/materials/PhysicalNode"
 import { NormalNode } from "./nodes/inputs/NormalNode"
 import { VolonoiNode } from "./nodes/noises/VolonoiNode"
 import { CrossNode } from "./nodes/math/CrossNode"
@@ -61,6 +59,8 @@ import { RadiansNode } from "./nodes/math/RadiansNode"
 import { DegreesNode } from "./nodes/math/DegreesNode"
 import { ReflectNode } from "./nodes/math/ReflectNode"
 import { RefractNode } from "./nodes/math/RefractNode"
+import { Vector4InputNode } from "./nodes/inputs/Vector4InputNode"
+import { Vector2InputNode } from "./nodes/inputs/Vector2InputNode"
 
 export function createGraphFromInputs(nodes: NodeProps[], wires: WireProps[]): ShaderGraph {
   const graph = new ShaderGraph()
@@ -79,11 +79,20 @@ export function createGraphFromInputs(nodes: NodeProps[], wires: WireProps[]): S
     if (n.typeId === NodeTypeId.InputFloat) {
       sn = new FloatInputNode(n.id)
     }
+    if (n.typeId === NodeTypeId.InputVector2) {
+      sn = new Vector2InputNode(n.id)
+    }
     if (n.typeId === NodeTypeId.InputVector3) {
       sn = new Vector3InputNode(n.id)
     }
+    if (n.typeId === NodeTypeId.InputVector4) {
+      sn = new Vector4InputNode(n.id)
+    }
     if (n.typeId === NodeTypeId.InputTexture) {
       sn = new TextureInputNode(n.id)
+    }
+    if (n.typeId === NodeTypeId.InputTextureSampling) {
+      sn = new TextureSamplingInputNode(n.id)
     }
     if (n.typeId === NodeTypeId.InputColor) {
       sn = new ColorInputNode(n.id)
@@ -231,16 +240,6 @@ export function createGraphFromInputs(nodes: NodeProps[], wires: WireProps[]): S
     }
     if (n.typeId === NodeTypeId.TextureVolonoi) {
       sn = new VolonoiNode(n.id)
-    }
-    // Materials
-    if (n.typeId === NodeTypeId.Material_Lambert) {
-      sn = new LambertNode(n.id)
-    }
-    if (n.typeId === NodeTypeId.Material_Phong) {
-      sn = new PhongNode(n.id)
-    }
-    if (n.typeId === NodeTypeId.Material_Physical) {
-      sn = new PhysicalNode(n.id)
     }
 
     if (sn) {

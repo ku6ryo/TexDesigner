@@ -1,6 +1,6 @@
-import {
-  Texture, Vector2, Vector3, Vector4,
-} from "three"
+import { Vector2 } from "./math/Vector2"
+import { Vector3 } from "./math/Vector3"
+import { Vector4 } from "./math/Vector4"
 import { validVariableName } from "./utils"
 import { Socket } from "./Socket"
 import { ShaderDataType } from "./data_types"
@@ -9,7 +9,7 @@ import { NodeInputValue } from "../definitions/types"
 export type Uniform = {
   type: ShaderDataType;
   name: string;
-  valueSampler2D?: Texture;
+  valueSampler2D?: HTMLImageElement;
   valueFloat?: number;
   valueVector2?: Vector2;
   valueVector3?: Vector3;
@@ -146,14 +146,14 @@ export abstract class ShaderNode {
 
   protected setUniformValue(index: number, value: Vector4): void;
 
-  protected setUniformValue(index: number, value: Texture): void;
+  protected setUniformValue(index: number, value: HTMLImageElement): void;
 
-  protected setUniformValue(index: number, value: Texture | number | Vector2 | Vector3 | Vector4): void {
+  protected setUniformValue(index: number, value: HTMLImageElement | number | Vector2 | Vector3 | Vector4): void {
     const u = this.#uniforms[index]
     if (!u) {
       throw new Error(`Uniform index ${index} does not exist. Node: ${this.#id}`)
     }
-    if (value instanceof Texture) {
+    if (value instanceof HTMLImageElement) {
       u.valueSampler2D = value
     } else if (typeof value === "number") {
       u.valueFloat = value

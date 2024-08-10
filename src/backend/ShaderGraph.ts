@@ -1,7 +1,7 @@
 import shortUUID from "short-uuid"
-import {
-  Texture, Vector2, Vector3, Vector4,
-} from "three"
+import { Vector2 } from "./math/Vector2"
+import { Vector3 } from "./math/Vector3"
+import { Vector4 } from "./math/Vector4"
 import { ShaderDataType } from "./data_types"
 import { BuiltIn, ShaderNode } from "./ShaderNode"
 import { Wire } from "./Wire"
@@ -191,7 +191,7 @@ export class ShaderGraph {
             values[name] = valueFloat
           }
           if (type === ShaderDataType.Vector2 && valueVector2) {
-            values[name] = valueVector3
+            values[name] = valueVector2
           }
           if (type === ShaderDataType.Vector3 && valueVector3) {
             values[name] = valueVector3
@@ -209,52 +209,50 @@ export class ShaderGraph {
   }
 
   vert(): string {
-    let uniformCode = ""
-    let header = ""
-    let common = ""
-    let main = ""
+      let uniformCode = ""
+      let header = ""
+      let common = ""
+      let main = ""
 
-    const headers: { [key: string]: string } = {}
-    const builtInMap: Map<BuiltIn, boolean> = new Map()
-    this.#nodes.forEach((n) => {
-      headers[n.getTypeId()] = n.generateVertCommonCode()
+      const headers: { [key: string]: string } = {}
+      const builtInMap: Map<BuiltIn, boolean> = new Map()
+      this.#nodes.forEach((n) => {
+        headers[n.getTypeId()] = n.generateVertCommonCode()
 
-      n.getBuiltIns().forEach((a) => {
-        builtInMap.set(a, true)
+        n.getBuiltIns().forEach((a) => {
+          builtInMap.set(a, true)
+        })
+        n.getUniforms().forEach((u, i) => {
+          if (n.getInSockets()[i].connected()) {
+            return
+          }
+          uniformCode += `uniform ${u.type} ${u.name};\n`
+        })
+        main += n.generateVertCode()
       })
-      n.getUniforms().forEach((u, i) => {
-        if (n.getInSockets()[i].connected()) {
-          return
-        }
-        uniformCode += `uniform ${u.type} ${u.name};\n`
-      })
-      main += n.generateVertCode()
-    })
 
-    header += Object.values(headers).join("\n")
+      header += Object.values(headers).join("\n")
 
-    if (builtInMap.get(BuiltIn.UV)) {
-      header += "varying vec2 vUv;\n"
-      common += "vUv = uv;\n"
-    }
-    if (builtInMap.get(BuiltIn.Normal)) {
-      header += "varying vec3 vNormal;\n"
-      common += "vNormal = normal;\n"
-    }
-    if (builtInMap.get(BuiltIn.VertexPositon)) {
-      header += "varying vec3 vPosition;\n"
-      common += "vPosition = position;\n"
-    }
-    return `
+      if (builtInMap.get(BuiltIn.UV)) {
+        header += "attribute vec2 aUv;\n";
+        header += "varying vec2 vUv;\n"
+        common += "vUv = aUv;\n"
+      }
+      if (builtInMap.get(BuiltIn.VertexPositon)) {
+        header += "varying vec3 vPosition;\n"
+        common += "vPosition = vec3(aPosition, 0.0);\n"
+      }
+      return `
+attribute vec2 aPosition;
+
 ${uniformCode}
 ${header}
 void main()
 {
 ${common}
 ${main}
-    gl_Position = projectionMatrix * viewMatrix * modelMatrix * vec4(position, 1.0);
-}
-`
+    gl_Position = vec4(aPosition, 0.0, 1.0);
+}`
   }
 
   frag(): string {
@@ -297,6 +295,7 @@ ${main}
     }
     header += Object.values(headers).join("\n")
     return `
+precision mediump float;
 ${uniformCode}
 ${header}
 
@@ -304,56 +303,5 @@ void main() {
 ${main}
 }
     `
-  }
-
-  js() {
-    let code = ""
-    const vert = this.vert()
-    const frag = this.frag()
-    code += `
-const vert = \`
-${vert}
-\`
-`
-    code += `
-const frag = \`
-${frag}
-\`
-`
-    const uMap = this.getUniformValueMap()
-    code += "const myUniforms = {\n"
-    Object.keys(uMap).forEach((name) => {
-      const value = uMap[name]
-      if (typeof value === "number") {
-        code += `  "${name}": new THREE.Uniform(${value}),\n`
-      }
-      if (value instanceof Vector2) {
-        code += `  "${name}": new THREE.Uniform(new THREE.Vector2(${value.x}, ${value.y})),\n`
-      }
-      if (value instanceof Vector3) {
-        code += `  "${name}": new THREE.Uniform(new THREE.Vector3(${value.x}, ${value.y}, ${value.z})),\n`
-      }
-      if (value instanceof Vector4) {
-        code += `  "${name}": new THREE.Uniform(new THREE.Vector4(${value.x}, ${value.y}, ${value.z}, ${value.w})),\n`
-      }
-      if (value instanceof Texture) {
-        code += `  "${name}": null, // Please set your texture e.g. new THREE.Uniform(new THREE.Texture([your image element]))\n`
-      }
-    })
-    code += "}\n"
-
-    code += "\n"
-    code += `
-const yourMaterial = new THREE.ShaderMaterial({
-  vertexShader: vert,
-  fragmentShader: frag,
-  uniforms: THREE.UniformsUtils.merge([
-    THREE.UniformsLib.lights,
-    myUniforms,
-  ]),
-  lights: true,
-})
-`
-    return code
   }
 }

@@ -1,4 +1,4 @@
-import { Vector4 } from "three"
+import { Vector4 } from "../backend/math/Vector4"
 import { NodeTypeId } from "./NodeTypeId"
 import { NodeCategory, NodeColor, NodeInputType } from "./types"
 

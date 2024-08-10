@@ -1,5 +1,4 @@
 import { useRef, MouseEventHandler } from "react"
-import { TextureLoader } from "three"
 import { NodeInputValue } from "../../../../definitions/types"
 import style from "./style.module.scss"
 
@@ -27,15 +26,17 @@ export function ImageInput({
       if (files) {
         const file = files.item(0)
         if (file) {
-          var arrayBufferView = new Uint8Array(await file.arrayBuffer())
-          var blob = new Blob( [ arrayBufferView ], { type: "image/jpeg" } );
-          var urlCreator = window.URL || window.webkitURL;
-          var imageUrl = urlCreator.createObjectURL( blob );
-          const loader = new TextureLoader()
-          const tex = await loader.loadAsync(imageUrl)
-          onChange({
-            image: tex,
-          })
+          const arrayBufferView = new Uint8Array(await file.arrayBuffer())
+          const blob = new Blob( [ arrayBufferView ], { type: "image/jpeg" } );
+          const urlCreator = window.URL || window.webkitURL;
+          const imageUrl = urlCreator.createObjectURL( blob );
+          const image = new Image()
+          image.onload = () => {
+            onChange({
+              image,
+            })
+          }
+          image.src = imageUrl
         }
       }
     })()
@@ -43,8 +44,8 @@ export function ImageInput({
   return (
     <div className={style.frame}>
       <div className={style.imageInputRect} onClick={onImageInputRectClick}>
-        {value.image && value.image.image && (
-          <img src={value.image.image.src}/>
+        {value.image && value.image && (
+          <img src={value.image.src}/>
         )}
       </div>
       <input

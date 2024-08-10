@@ -3,8 +3,9 @@ import { ShaderDataType } from "../../data_types"
 
 export class Vector2InputNode extends ShaderNode {
   constructor(id: string) {
-    super(id, "Vector2Input")
-    this.addOutSocket("Vector2InputNodeOut", ShaderDataType.Vector2)
+    super(id, "V2Input")
+    this.addInSocket("i", ShaderDataType.Vector2)
+    this.addOutSocket("o", ShaderDataType.Vector2)
   }
 
   generateFragCommonCode(): string {
@@ -12,14 +13,8 @@ export class Vector2InputNode extends ShaderNode {
   }
 
   generateFragCode(): string {
-    /*
-    const x = this.#value.x
-    const y = this.#value.y
-    const parts = [x, y].map(createValidNumberLiteral).join(", ")
-    return `
-    vec2 ${outputs[0].getVeriableName()} = vec2(${parts});
-    `
-    */
-    return ""
+    const i = this.getInSocket(0)
+    const o = this.getOutSocket(0)
+    return `vec2 ${o.getVarName()} = ${i.getVarName()};`
   }
 }

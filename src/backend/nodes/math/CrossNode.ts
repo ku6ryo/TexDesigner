@@ -1,6 +1,6 @@
 import { ShaderNode } from "../../ShaderNode"
 import { ShaderDataType, } from "../../data_types"
-import { Vector3 } from "three"
+import { Vector3 } from "../../math/Vector3"
 
 export class CrossNode extends ShaderNode {
 
