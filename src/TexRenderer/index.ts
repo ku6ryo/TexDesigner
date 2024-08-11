@@ -1,9 +1,7 @@
-import { Vector2 } from "../backend/math/Vector2" 
+import { Vector2 } from "../backend/math/Vector2"
 import { Vector3 } from "../backend/math/Vector3"
 import { Vector4 } from "../backend/math/Vector4"
 import { ShaderGraph } from "../backend/ShaderGraph"
-
-
 
 export class TexRenderer {
     canvas: HTMLCanvasElement
@@ -58,7 +56,7 @@ export class TexRenderer {
 
         // Setting up the canvas and program
         gl.viewport(0, 0, this.canvas.width, this.canvas.height)
-        const program  = gl.createProgram()!
+        const program = gl.createProgram()!
         gl.attachShader(program, vertShader)
         gl.attachShader(program, fragShader)
         gl.linkProgram(program)

@@ -35,11 +35,10 @@ export function FloatInputBase({
   const [textValue, setTextValue] = useState("")
   const numberAreaRef = useRef<HTMLDivElement | null>(null)
   const isDraggingValueRef = useRef(false)
-  const valueRef = useRef(value)
-  valueRef.current = value
   const [_, setTimestamp] = useState(0)
   const forceUpdate = useCallback(() => setTimestamp(new Date().getTime()), [])
 
+  // Wrapping the onChange so that the value is always in the range.
   const emitOnChange = useCallback((v: number) => {
     if (v > MAX_VALUE) {
       onChange(MAX_VALUE)
@@ -52,7 +51,11 @@ export function FloatInputBase({
     onChange(Number(v.toFixed(MAX_DECIMAL_PLACES)))
   }, [onChange])
 
-  const throttledEmitOnChange = throttle(100, emitOnChange)
+  // I do not want the function injected in useEffect to be updated every time the value and the emitOnChange function changes.
+  // So providing them as a ref.
+  const valueRef = useRef(value)
+  valueRef.current = value
+  const throttledEmitOnChange = useMemo(() => throttle(100, emitOnChange), [emitOnChange])
   const throttledEmitOnChangeRef = useRef<throttle<(v: number) => void> | null>(null)
   throttledEmitOnChangeRef.current = throttledEmitOnChange
 
@@ -100,7 +103,7 @@ export function FloatInputBase({
       window.document.removeEventListener("mouseup", mouseUp)
       numberAreaRef.current?.removeEventListener("mousedown", mouseDown)
     }
-  }, [numberAreaRef, throttledEmitOnChangeRef])
+  }, [numberAreaRef, throttledEmitOnChangeRef, valueRef, forceUpdate])
 
   const onArrowClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation()

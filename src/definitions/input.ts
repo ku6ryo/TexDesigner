@@ -129,7 +129,7 @@ export const inputDefs: NodeDefinition[] = [{
     label: "Value",
     alternativeValueInputType: NodeInputType.Vector4,
     alternativeValue: {
-      vec2: new Vector4(0, 0, 0, 0),
+      vec4: new Vector4(0, 0, 0, 0),
     },
     socketHidden: true,
   }],
