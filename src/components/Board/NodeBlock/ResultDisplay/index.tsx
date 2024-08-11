@@ -37,9 +37,12 @@ export function ResultDisplay({
     }, [])
     return (
         <div className={style.frame}>
-            <canvas ref={canvasRef} />
-
-            <button onClick={onDownloadClick}>download</button>
+            <div className={style.canvasContainer}>
+                <canvas ref={canvasRef} />
+            </div>
+            <div>
+                <button onClick={onDownloadClick}>download</button>
+            </div>
         </div>
     )
 }

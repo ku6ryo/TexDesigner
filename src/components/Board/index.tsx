@@ -14,6 +14,7 @@ import { NodeSelector } from "./NodeSelector";
 import { NodeDefinition, NodeInputValue } from "../../definitions/types";
 import { NodeRectsManager } from "./NodeRectsManger";
 import { createPortal } from "react-dom";
+import { NodeTypeId } from "../../definitions/NodeTypeId";
 
 /**
  * ZOOM configurations
@@ -702,6 +703,7 @@ export function Board({
               onDragStart={onNodeDragStart}
               onInSocketValueChange={onInSocketValueChangeInternal}
               onGeometryUpdate={onNodeGeometryUpdate}
+              hasResult={n.typeId === NodeTypeId.OutputColor}
             />
           ))}
           {drawingWire && (drawingWire.startDirection == "in" ? (

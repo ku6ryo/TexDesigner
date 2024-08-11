@@ -28,6 +28,7 @@ type Props = {
     inRects: (DOMRect | undefined)[]
     outRects: (DOMRect | undefined)[]
   }) => void
+  hasResult?: boolean
 }
 
 
@@ -45,6 +46,7 @@ export function NodeBlock ({
   onDragStart,
   onInSocketValueChange,
   onGeometryUpdate,
+  hasResult = false,
 }: Props) {
   const frameRef = useRef<SVGForeignObjectElement | null>(null)
   const boxRef = useRef<HTMLDivElement | null>(null)
@@ -159,11 +161,13 @@ export function NodeBlock ({
               )
             })}
           </div>
-        <RenderResultContext.Consumer>
-          {value => {
-            return <ResultDisplay manager={value} nodeId={id} />
-          }}
-        </RenderResultContext.Consumer>
+          {hasResult && (
+            <RenderResultContext.Consumer>
+              {value => {
+                return <ResultDisplay manager={value} nodeId={id} />
+              }}
+            </RenderResultContext.Consumer>
+          )}
         </div>
       </foreignObject>
     </g>

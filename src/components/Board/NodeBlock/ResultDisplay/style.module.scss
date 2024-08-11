@@ -1,8 +1,17 @@
 .frame {
   position: relative;
-  width: 100%;
 
-  canvas {
+  .canvasContainer {
+    padding-top: 100%;
+    position: relative;
     width: 100%;
+
+    canvas {
+      top: 4px;
+      left: 4px;
+      position: absolute;
+      height: calc(100% - 8px);
+      width: calc(100% - 8px);
+    }
   }
 }
