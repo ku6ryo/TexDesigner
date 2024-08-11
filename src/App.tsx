@@ -136,6 +136,7 @@ export function App() {
           <div>Right click: Open menu to add nodes</div>
           <div>Mouse wheel: Zoom</div>
           <div>Wheel press and drag: Pan</div>
+          <div>Drag on number input: Increase or decrease value</div>
         </div>
         <Toaster position={Position.BOTTOM} ref={toasterRef} maxToasts={1}/>
       </RenderResultContext.Provider>
