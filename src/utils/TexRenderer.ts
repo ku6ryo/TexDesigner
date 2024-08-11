@@ -147,5 +147,4 @@ export class TexRenderer {
         gl.deleteShader(vertShader);
         gl.deleteShader(fragShader);
     }
-
 }

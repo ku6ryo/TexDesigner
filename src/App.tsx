@@ -15,6 +15,7 @@ import { UniformValueNotSetError } from "./backend/ShaderNode";
 import { NodeInputValue } from "./definitions/types";
 import { TexRenderer } from "./utils/TexRenderer";
 import { throttle } from "throttle-debounce";
+import { RenderResultContext, renderResultManager } from "./utils/RenderResultContext";
 
 /**
  * The root component. 
@@ -30,12 +31,17 @@ export function App() {
     r.setSize(2048, 2048)
     return r
   }, [])
-  const throttledRender = throttle(100, () => texRenderer.render())
-  useEffect(() => {
-    if (outputContainerRef.current) {
-      outputContainerRef.current.appendChild(texRenderer.canvas)
+  const throttledRender = throttle(100, () => {
+    if (!graphRef.current) {
+      return
     }
-  }, [outputContainerRef.current])
+    const outputNode = graphRef.current.getOutputNode()
+    if (!outputNode) {
+      return
+    }
+    texRenderer.render()
+    renderResultManager.setResult(outputNode.getId(), texRenderer.canvas)
+  })
 
   const onChange = (nodes: NodeProps[], wires: WireProps[]) => {
     try {
@@ -110,28 +116,29 @@ export function App() {
 
   return (
     <>
-      <div className={style.logo}>
-        <div className={style.title}>Tex Designer&nbsp;<NodeIcon/></div>
-        <div className={style.versions}>
-          <span>{`v${version}`}</span>
+      <RenderResultContext.Provider value={renderResultManager}>
+        <div className={style.logo}>
+          <div className={style.title}>Tex Designer&nbsp;<NodeIcon/></div>
+          <div className={style.versions}>
+            <span>{`v${version}`}</span>
+          </div>
         </div>
-      </div>
-      <div ref={outputContainerRef} className={style.output}/>
-      <div className={style.board}>
-        <Board
-          nodeDefinitions={definitions}
-          onChange={onChange}
-          onInSocketValueChange={onInSocketValueChange}
-          invalidWireId={invalidWireId}
-        />
-      </div>
-      <div className={style.help}>
-        <div>Help</div>
-        <div>Right click: Open menu to add nodes</div>
-        <div>Mouse wheel: Zoom</div>
-        <div>Wheel press and drag: Pan</div>
-      </div>
-      <Toaster position={Position.BOTTOM} ref={toasterRef} maxToasts={1}/>
+        <div className={style.board}>
+          <Board
+            nodeDefinitions={definitions}
+            onChange={onChange}
+            onInSocketValueChange={onInSocketValueChange}
+            invalidWireId={invalidWireId}
+          />
+        </div>
+        <div className={style.help}>
+          <div>Help</div>
+          <div>Right click: Open menu to add nodes</div>
+          <div>Mouse wheel: Zoom</div>
+          <div>Wheel press and drag: Pan</div>
+        </div>
+        <Toaster position={Position.BOTTOM} ref={toasterRef} maxToasts={1}/>
+      </RenderResultContext.Provider>
     </>
   )
 }

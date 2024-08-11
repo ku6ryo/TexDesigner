@@ -5,6 +5,8 @@ import { NodeInputValue, NodeColor } from "../../../definitions/types"
 import { InSocketProps, OutSocketProps } from "../types"
 import { SocketDirection } from "./types"
 import { SocketRow } from "./SocketRow"
+import { RenderResultContext } from "../../../utils/RenderResultContext"
+import { ResultDisplay } from "./ResultDisplay"
 
 type Props = {
   id: string,
@@ -157,6 +159,11 @@ export function NodeBlock ({
               )
             })}
           </div>
+        <RenderResultContext.Consumer>
+          {value => {
+            return <ResultDisplay manager={value} nodeId={id} />
+          }}
+        </RenderResultContext.Consumer>
         </div>
       </foreignObject>
     </g>

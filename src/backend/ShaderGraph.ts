@@ -46,6 +46,8 @@ export class ShaderGraph {
 
   #id: string
 
+  #outputNode: ShaderNode | null = null
+
   constructor() {
     this.#id = shortUUID().generate()
     console.log(`ShaderGraph created with id: ${this.#id}`)
@@ -70,6 +72,10 @@ export class ShaderGraph {
 
   hasNode(nodeId: string): boolean {
     return !!this.#nodes.find((n) => n.getId() === nodeId)
+  }
+
+  getOutputNode(): ShaderNode | null {
+    return this.#outputNode
   }
 
   /**
@@ -122,6 +128,7 @@ export class ShaderGraph {
     if (outputNodeCount > 1) {
       throw new Error("More than one output node found")
     }
+    this.#outputNode = outputNode
 
     const nodeMap: { [key: string]: ShaderNode } = {}
     const routeMap: { [key: string]: string[] } = {}
