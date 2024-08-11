@@ -28,7 +28,8 @@ type Props = {
   }) => void
 }
 
-export const NodeBlock = memo(function ({
+
+export function NodeBlock ({
   id,
   name,
   color,
@@ -139,7 +140,7 @@ export const NodeBlock = memo(function ({
               }
               return (
                 <SocketRow
-                  key={`out-${i}`}
+                  key={`in-${i}`}
                   label={socket.label}
                   direction="in"
                   index={i}
@@ -160,4 +161,4 @@ export const NodeBlock = memo(function ({
       </foreignObject>
     </g>
   )
-})
+}

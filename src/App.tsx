@@ -17,7 +17,6 @@ import { TexRenderer } from "./TexRenderer";
 import { throttle } from "throttle-debounce";
 
 export function App() {
-
   const graphRef = useRef<ShaderGraph | null>(null)
   const toasterRef = useRef<Toaster>(null)
   const [invalidWireId, setInvalidaWireId] = useState<string | null>(null)

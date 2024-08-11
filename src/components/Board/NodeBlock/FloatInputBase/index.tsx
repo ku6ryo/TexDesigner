@@ -14,6 +14,7 @@ import {
   MdKeyboardArrowLeft as LeftArrowIcon
 } from "react-icons/md"
 import classNames from "classnames"
+import { throttle } from "throttle-debounce"
 
 const DELTA = 0.01
 const MAX_DECIMAL_PLACES = 5
@@ -36,7 +37,24 @@ export function FloatInputBase({
   const isDraggingValueRef = useRef(false)
   const valueRef = useRef(value)
   valueRef.current = value
-  const [_, forceUpdate] = useState(0)
+  const [_, setTimestamp] = useState(0)
+  const forceUpdate = useCallback(() => setTimestamp(new Date().getTime()), [])
+
+  const emitOnChange = useCallback((v: number) => {
+    if (v > MAX_VALUE) {
+      onChange(MAX_VALUE)
+      return
+    }
+    if (v < MIN_VALUE) {
+      onChange(MIN_VALUE)
+      return
+    }
+    onChange(Number(v.toFixed(MAX_DECIMAL_PLACES)))
+  }, [onChange])
+
+  const throttledEmitOnChange = throttle(100, emitOnChange)
+  const throttledEmitOnChangeRef = useRef<throttle<(v: number) => void> | null>(null)
+  throttledEmitOnChangeRef.current = throttledEmitOnChange
 
   useEffect(() => {
     if (!numberAreaRef.current) return
@@ -51,7 +69,7 @@ export function FloatInputBase({
       isDraggingValueRef.current = true
       const delta = e.clientX - mouseDownX
       const v = valueAtMouseDown + delta * DELTA
-      emitOnChange(v)
+      throttledEmitOnChangeRef.current?.(v)
     }
     function mouseDown (e: MouseEvent) {
       mouseIsDown = true
@@ -62,13 +80,13 @@ export function FloatInputBase({
       mouseIsDown = false
       if (isDraggingValueRef.current) {
         isDraggingValueRef.current = false
-        forceUpdate(new Date().getTime())
+        forceUpdate()
       } else {
         if (e.target === numberAreaRef.current || numberAreaRef.current?.contains(e.target as Node)) {
           setTyping(true)
           if (inputRef.current) {
             inputRef.current.focus()
-            setTextValue(value.toFixed(5).replace(/\.?0+$/, ""))
+            setTextValue(valueRef.current.toFixed(5).replace(/\.?0+$/, ""))
           }
         }
       }
@@ -82,19 +100,7 @@ export function FloatInputBase({
       window.document.removeEventListener("mouseup", mouseUp)
       numberAreaRef.current?.removeEventListener("mousedown", mouseDown)
     }
-  }, [numberAreaRef])
-
-  const emitOnChange = useCallback((v: number) => {
-    if (v > MAX_VALUE) {
-      onChange(MAX_VALUE)
-      return
-    }
-    if (v < MIN_VALUE) {
-      onChange(MIN_VALUE)
-      return
-    }
-    onChange(Number(v.toFixed(MAX_DECIMAL_PLACES)))
-  }, [onChange])
+  }, [numberAreaRef, throttledEmitOnChangeRef])
 
   const onArrowClick = useCallback((e: React.MouseEvent<HTMLDivElement>) => {
     e.stopPropagation()

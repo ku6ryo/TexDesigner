@@ -13,6 +13,7 @@ import { Slider } from "@blueprintjs/core";
 import { NodeSelector } from "./NodeSelector";
 import { NodeDefinition, NodeInputValue } from "../../definitions/types";
 import { NodeRectsManager } from "./NodeRectsManger";
+import { createPortal } from "react-dom";
 
 /**
  * ZOOM configurations
@@ -123,12 +124,18 @@ export function Board({
   const [draggingNode, setDraggingNode] = useState<DraggingNodeStats | null>(null)
   const [drawingRect, setDrawingRect] = useState<DrawingRectStats | null>(null)
   const [nodeIdToGeoUpdate, setNodeIdToGeoUpdate] = useState<string | null>(null)
-  const [_, setNwUpdate] = useState("")
+  const [__, setTimestamp] = useState(0)
+  const forceUpdate = useCallback(() => {
+    setTimestamp(Date.now())
+  }, [setTimestamp])
+
+  const [menuPos, setMenuPos] = useState<{ x: number, y: number } | null>(null)
+
   // Singletons
   const nwManager = useMemo(() => {
     const m = new NodeWireManager()
     m.setOnUpdate((id) => {
-      setNwUpdate(id)
+      forceUpdate()
     })
     return m
   }, [])
@@ -278,6 +285,7 @@ export function Board({
   }, [board, drawingWire, setDrawingWire])
 
   const onNodeDragStart = useCallback((id: string, mouseX: number, mouseY: number) => {
+    setMenuPos(null)
     const nodes = nwManager.getNodes()
     const targetNode = nwManager.getNode(id)
     const mouseOnBoardX = mouseX - board.domX
@@ -423,6 +431,7 @@ export function Board({
   }, [])
 
   const onMouseDown = useCallback((e: React.MouseEvent<SVGSVGElement>) => {
+    setMenuPos(null)
     const mouseX = e.clientX - board.domX
     const mouseY = e.clientY - board.domY
 
@@ -454,6 +463,7 @@ export function Board({
 
   // On a node is selected by the selector.
   const onNodeAdd = useCallback((typeId: string) => {
+    setMenuPos(null)
     const d = nodeDefinitions.find(d => d.id === typeId)
     if (!d) {
       throw new Error("No factory found for node type " + typeId)
@@ -462,36 +472,6 @@ export function Board({
     nwManager.addNode(d, board.centerX, board.centerY)
     saveHistory()
   }, [nodeDefinitions, nwManager, board.centerX, board.centerY])
-
-  useEffect(() => {
-    const keydownListener = (e: KeyboardEvent) => {
-      if (e.code === "Delete" || e.code === "Backspace") {
-        const removed = nwManager.removeSelected()
-        if (removed) {
-          saveHistory()
-          notifyChange()
-        }
-      }
-      if (e.code === "Escape") {
-        nwManager.updateNodes(nodes.map(n => { n.selected = false; return n }))
-      }
-      if (e.code === "KeyZ" && e.ctrlKey) {
-        goToPrevHistory()
-      }
-      if (e.code === "KeyD" && e.ctrlKey) {
-        e.preventDefault()
-        const duplicated = nwManager.duplicateSelected()
-        if (duplicated) {
-          saveHistory()
-          notifyChange()
-        }
-      }
-    }
-    window.addEventListener("keydown", keydownListener)
-    return () => {
-      window.removeEventListener("keydown", keydownListener)
-    }
-  }, [svgRootRef.current])
 
   const onZoomSliderChange = useCallback((v: number) => {
     setBoard({
@@ -567,6 +547,7 @@ export function Board({
       n.inSockets[index] = newSocket
       nwManager.updateNode(n)
       onInSocketValueChange(nodeId, index, value)
+      forceUpdate()
     }
   }
   , [nwManager, onInSocketValueChange])
@@ -624,6 +605,11 @@ export function Board({
     }
   }, [nodeIdToGeoUpdate, setNodeIdToGeoUpdate, board, nwManager])
 
+  const onContextMenu = useCallback((e: React.MouseEvent) => {
+    e.preventDefault()
+    setMenuPos({ x: e.pageX, y: e.pageY })
+  }, [])
+
   // Preparing for rendering.
   const viewBox = useMemo(() => {
     return `${board.centerX - board.domWidth / 2 / board.zoom} ${board.centerY - board.domHeight / 2 / board.zoom} ${board.domWidth / board.zoom} ${board.domHeight / board.zoom}`
@@ -635,92 +621,128 @@ export function Board({
     return nwManager.getWires()
   }, [nwManager.getUpdateId()])
 
+  useEffect(() => {
+    const keydownListener = (e: KeyboardEvent) => {
+      if (e.code === "Delete" || e.code === "Backspace") {
+        const removed = nwManager.removeSelected()
+        if (removed) {
+          saveHistory()
+          notifyChange()
+        }
+      }
+      if (e.code === "Escape") {
+        nwManager.updateNodes(nodes.map(n => { n.selected = false; return n }))
+        setMenuPos(null)
+      }
+      if (e.code === "KeyZ" && e.ctrlKey) {
+        goToPrevHistory()
+      }
+      if (e.code === "KeyD" && e.ctrlKey) {
+        e.preventDefault()
+        const duplicated = nwManager.duplicateSelected()
+        if (duplicated) {
+          saveHistory()
+          notifyChange()
+        }
+      }
+    }
+    window.addEventListener("keydown", keydownListener)
+    return () => {
+      window.removeEventListener("keydown", keydownListener)
+    }
+  }, [svgRootRef.current, nodes])
+
   return (
-    <div className={style.frame}>
-      <svg
-        className={classnames({
-          [style.board]: true,
-          [style.grabbing]: !!draggingNode || !!draggingBoard,
-        })}
-        ref={svgRootRef}
-        viewBox={viewBox}
-        preserveAspectRatio="none"
-        onMouseMove={onMouseMove}
-        onMouseUp={onMouseUp}
-        onMouseDown={onMouseDown}
-        onMouseLeave={onMouseLeave}
-      >
-        <defs>
-          <linearGradient id="wire-linear" x1="20%" y1="0%" x2="80%" y2="0%" spreadMethod="pad">
-            <stop offset="0%"   stopColor="#ddd"/>
-            <stop offset="100%" stopColor="#888"/>
-          </linearGradient>
-          <pattern id="board-background-pattern" viewBox="0 0 24 24" width={"0.02%"} height="0.02%">
-            <g className={style.boardPattern} fill="#000000">
-              <polygon points="0 18 6 18 12 12 12 18 18 18 12 24 0 24"/>
-              <polygon points="24 18 24 24 18 24"/>
-              <polygon points="24 0 18 6 12 6 18 0"/>
-              <polygon points="12 0 12 6 0 18 0 12 6 6 0 0"/>
-            </g>
-          </pattern>
-        </defs>
-        <circle cx={0} cy={0} r={100000} fill="url(#board-background-pattern)" />
-        {wires.map(w => (
-          <WireLine key={w.id} x1={w.inX} y1={w.inY} x2={w.outX} y2={w.outY} valid={w.id !== invalidWireId}/>
-        ))}
-        {nodes.map((n) => (
-          <NodeBlock
-            key={n.id}
-            id={n.id}
-            name={n.name}
-            color={n.color}
-            x={n.x}
-            y={n.y}
-            selected={n.selected}
-            inSockets={n.inSockets}
-            outSockets={n.outSockets}
-            onSocketMouseDown={onSocketMouseDown}
-            onSocketMouseUp={onSocketMouseUp}
-            onDragStart={onNodeDragStart}
-            onInSocketValueChange={onInSocketValueChangeInternal}
-            onGeometryUpdate={onNodeGeometryUpdate}
+    <>
+      <div className={style.frame} onContextMenu={onContextMenu}>
+        <svg
+          className={classnames({
+            [style.board]: true,
+            [style.grabbing]: !!draggingNode || !!draggingBoard,
+          })}
+          ref={svgRootRef}
+          viewBox={viewBox}
+          preserveAspectRatio="none"
+          onMouseMove={onMouseMove}
+          onMouseUp={onMouseUp}
+          onMouseDown={onMouseDown}
+          onMouseLeave={onMouseLeave}
+        >
+          <defs>
+            <linearGradient id="wire-linear" x1="20%" y1="0%" x2="80%" y2="0%" spreadMethod="pad">
+              <stop offset="0%"   stopColor="#ddd"/>
+              <stop offset="100%" stopColor="#888"/>
+            </linearGradient>
+            <pattern id="board-background-pattern" viewBox="0 0 24 24" width={"0.02%"} height="0.02%">
+              <g className={style.boardPattern} fill="#000000">
+                <polygon points="0 18 6 18 12 12 12 18 18 18 12 24 0 24"/>
+                <polygon points="24 18 24 24 18 24"/>
+                <polygon points="24 0 18 6 12 6 18 0"/>
+                <polygon points="12 0 12 6 0 18 0 12 6 6 0 0"/>
+              </g>
+            </pattern>
+          </defs>
+          <circle cx={0} cy={0} r={100000} fill="url(#board-background-pattern)" />
+          {wires.map(w => (
+            <WireLine key={w.id} x1={w.inX} y1={w.inY} x2={w.outX} y2={w.outY} valid={w.id !== invalidWireId}/>
+          ))}
+          {nodes.map((n) => (
+            <NodeBlock
+              key={n.id}
+              id={n.id}
+              name={n.name}
+              color={n.color}
+              x={n.x}
+              y={n.y}
+              selected={n.selected}
+              inSockets={n.inSockets}
+              outSockets={n.outSockets}
+              onSocketMouseDown={onSocketMouseDown}
+              onSocketMouseUp={onSocketMouseUp}
+              onDragStart={onNodeDragStart}
+              onInSocketValueChange={onInSocketValueChangeInternal}
+              onGeometryUpdate={onNodeGeometryUpdate}
+            />
+          ))}
+          {drawingWire && (drawingWire.startDirection == "in" ? (
+            <WireLine x1={drawingWire.movingX} y1={drawingWire.movingY} x2={drawingWire.startX} y2={drawingWire.startY} valid={true}/>
+          ) : (
+            <WireLine x1={drawingWire.startX} y1={drawingWire.startY} x2={drawingWire.movingX} y2={drawingWire.movingY} valid={true}/>
+          ))}
+          {drawingRect && (
+            <rect
+              x={drawingRect.x}
+              y={drawingRect.y}
+              width={drawingRect.width}
+              height={drawingRect.height}
+              fill="rgba(255, 255, 255, 0.1)"
+              stroke="white"
+              strokeWidth={2 / board.zoom}
+              strokeLinecap="round"
+              strokeDasharray={`${4 / board.zoom} ${4 / board.zoom}`}
+            />
+          )}
+        </svg>
+        <div className={style.nodeSelector}>
+          <NodeSelector definitions={nodeDefinitions} onSelected={onNodeAdd} />
+        </div>
+        <div className={style.zoomSlider}>
+          <Slider
+            min={MIN_ZOOM}
+            max={MAX_ZOOM}
+            stepSize={ZOOM_STEP}
+            labelStepSize={10}
+            onChange={onZoomSliderChange}
+            labelRenderer={(value: any) => `${(value * 100).toFixed()}%`}
+            showTrackFill={false}
+            value={board.zoom}
+            vertical={true}
           />
-        ))}
-        {drawingWire && (drawingWire.startDirection == "in" ? (
-          <WireLine x1={drawingWire.movingX} y1={drawingWire.movingY} x2={drawingWire.startX} y2={drawingWire.startY} valid={true}/>
-        ) : (
-          <WireLine x1={drawingWire.startX} y1={drawingWire.startY} x2={drawingWire.movingX} y2={drawingWire.movingY} valid={true}/>
-        ))}
-        {drawingRect && (
-          <rect
-            x={drawingRect.x}
-            y={drawingRect.y}
-            width={drawingRect.width}
-            height={drawingRect.height}
-            fill="rgba(255, 255, 255, 0.1)"
-            stroke="white"
-            strokeWidth={2 / board.zoom}
-            strokeLinecap="round"
-            strokeDasharray={`${4 / board.zoom} ${4 / board.zoom}`}
-          />
-        )}
-      </svg>
-      <div className={style.nodeSelector}>
+        </div>
+      </div>
+      {menuPos && createPortal(<div className={style.contextMenu} style={{ left: menuPos.x, top: menuPos.y }}>
         <NodeSelector definitions={nodeDefinitions} onSelected={onNodeAdd} />
-      </div>
-      <div className={style.zoomSlider}>
-        <Slider
-          min={MIN_ZOOM}
-          max={MAX_ZOOM}
-          stepSize={ZOOM_STEP}
-          labelStepSize={10}
-          onChange={onZoomSliderChange}
-          labelRenderer={(value: any) => `${(value * 100).toFixed()}%`}
-          showTrackFill={false}
-          value={board.zoom}
-          vertical={true}
-        />
-      </div>
-    </div>
+      </div>, document.body)}
+    </>
   )
 }

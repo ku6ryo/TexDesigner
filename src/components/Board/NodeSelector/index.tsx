@@ -62,16 +62,8 @@ export function NodeSelector({
     <div className={style.frame}>
       {categories.map((c) => {
         return (
-          <div key={c.id} className={style.item}>
-            <Tooltip2
-              content={c.label}
-              placement={"left"}
-              usePortal={false}
-            >
-              <Button onClick={onCategoryClick} data-id={c.id}>
-                <Icon icon={c.icon as any} />
-              </Button>
-            </Tooltip2>
+          <div key={c.id} onClick={onCategoryClick} data-id={c.id} className={style.category}>
+            <Icon icon={c.icon as any} />&nbsp;&nbsp;{c.label}
             {selectedCatId === c.id && (
               <div className={style.nodes}>
                 {nodeMap.get(c.id)!.map((n) => {

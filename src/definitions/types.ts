@@ -44,7 +44,7 @@ export function cloneNodeInputValue(v: NodeInputValue) {
     vec2: v.vec2 ? v.vec2.clone() : undefined,
     vec3: v.vec3 ? v.vec3.clone() : undefined,
     vec4: v.vec4 ? v.vec4.clone() : undefined,
-    image: v.image ? v.image.cloneNode() : undefined,
+    image: v.image ? v.image.cloneNode() as HTMLImageElement : undefined,
   }
 }
 

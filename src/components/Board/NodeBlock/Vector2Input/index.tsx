@@ -1,4 +1,4 @@
-import { useCallback, memo } from "react"
+import { useCallback, memo, useRef } from "react"
 import { Vector2 } from "../../../../backend/math/Vector2"
 import { NodeInputValue } from "../../../../definitions/types"
 import { FloatInputBase } from "../FloatInputBase"
@@ -33,21 +33,21 @@ export const Vector2Input = memo(function ({
       vec2: v,
     })
   }, [onChange, value])
+  const onChangeX = useCallback((f: number) => {
+    onChangeInternal("x", f)
+  }, [onChangeInternal])
+  const onChangeY = useCallback((f: number) => {
+    onChangeInternal("y", f)
+  }, [onChangeInternal])
   return (
     <div>
-      <FloatInputBase value={value.vec2.x}
-        onChange={
-          (v) => {
-            onChangeInternal("x", v)
-          }
-        }
+      <FloatInputBase
+        value={value.vec2.x}
+        onChange={onChangeX}
       />
-      <FloatInputBase value={value.vec2.y}
-        onChange={
-          (v) => {
-            onChangeInternal("y", v)
-          }
-        }
+      <FloatInputBase
+        value={value.vec2.y}
+        onChange={onChangeY}
       />
     </div>
   )
