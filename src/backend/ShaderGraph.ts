@@ -178,7 +178,6 @@ export class ShaderGraph {
     Object.keys(nodeMap).sort((a, b) => Number(b) - Number(a)).forEach((k) => {
       // Removes duplications.
       const n = nodeMap[k]
-      console.log(k, n.getId())
       if (!resolvedNodes.includes(n)) {
         resolvedNodes.push(n)
       }

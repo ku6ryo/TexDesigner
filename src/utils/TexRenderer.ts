@@ -62,6 +62,10 @@ export class TexRenderer {
         gl.linkProgram(program)
         gl.useProgram(program)
 
+        // Enable blending for the alpha transparency
+        gl.enable(gl.BLEND);
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
         // Create a buffer for the square's vertices
         const positionBuffer = gl.createBuffer();
         gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
@@ -131,8 +135,8 @@ export class TexRenderer {
             }
         })
 
-        // Clear the canvas
-        gl.clearColor(0.0, 0.0, 0.0, 1.0); // Black background
+        // Clear the canvas with transparent pixels
+        gl.clearColor(0.0, 0.0, 0.0, 0.0);
         gl.clear(gl.COLOR_BUFFER_BIT);
 
         // Draw the square

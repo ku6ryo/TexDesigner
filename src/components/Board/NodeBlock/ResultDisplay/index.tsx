@@ -14,7 +14,6 @@ export function ResultDisplay({
     const canvasRef = useRef<HTMLCanvasElement | null>(null)
     useEffect(() => {
         const callback = (canvas: HTMLCanvasElement) => {
-            console.log("canvas", canvas)
             if (!canvasRef.current) return
             canvasRef.current.width = canvas.width
             canvasRef.current.height = canvas.height
