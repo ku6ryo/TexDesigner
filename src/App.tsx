@@ -13,9 +13,12 @@ import "../node_modules/@blueprintjs/icons/lib/css/blueprint-icons.css"
 import "../node_modules/@blueprintjs/popover2/lib/css/blueprint-popover2.css"
 import { UniformValueNotSetError } from "./backend/ShaderNode";
 import { NodeInputValue } from "./definitions/types";
-import { TexRenderer } from "./TexRenderer";
+import { TexRenderer } from "./utils/TexRenderer";
 import { throttle } from "throttle-debounce";
 
+/**
+ * The root component. 
+ */
 export function App() {
   const graphRef = useRef<ShaderGraph | null>(null)
   const toasterRef = useRef<Toaster>(null)
@@ -107,13 +110,13 @@ export function App() {
 
   return (
     <>
-      <div className={style.sidebar}>
+      <div className={style.logo}>
         <div className={style.title}>Tex Designer&nbsp;<NodeIcon/></div>
         <div className={style.versions}>
           <span>{`v${version}`}</span>
         </div>
-        <div ref={outputContainerRef} className={style.output}/>
       </div>
+      <div ref={outputContainerRef} className={style.output}/>
       <div className={style.board}>
         <Board
           nodeDefinitions={definitions}
@@ -121,6 +124,12 @@ export function App() {
           onInSocketValueChange={onInSocketValueChange}
           invalidWireId={invalidWireId}
         />
+      </div>
+      <div className={style.help}>
+        <div>Help</div>
+        <div>Right click: Open menu to add nodes</div>
+        <div>Mouse wheel: Zoom</div>
+        <div>Wheel press and drag: Pan</div>
       </div>
       <Toaster position={Position.BOTTOM} ref={toasterRef} maxToasts={1}/>
     </>
