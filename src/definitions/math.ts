@@ -370,6 +370,24 @@ export const mathDefs: NodeDefinition[] = [{
     label: "Result",
   }],
 }, {
+  id: NodeTypeId.MathMix,
+  name: "Mix",
+  category: mathCategory,
+  inSockets: [{
+    label: "Value 1",
+  }, {
+    label: "Value 2",
+  }, {
+    label: "Ratio",
+    alternativeValueInputType: NodeInputType.Float,
+    alternativeValue: {
+      float: 0.5,
+    }
+  }],
+  outSockets: [{
+    label: "Result",
+  }],
+}, {
   id: NodeTypeId.MathMin,
   name: "Min",
   category: mathCategory,

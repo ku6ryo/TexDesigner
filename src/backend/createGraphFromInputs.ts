@@ -61,6 +61,7 @@ import { ReflectNode } from "./nodes/math/ReflectNode"
 import { RefractNode } from "./nodes/math/RefractNode"
 import { Vector4InputNode } from "./nodes/inputs/Vector4InputNode"
 import { Vector2InputNode } from "./nodes/inputs/Vector2InputNode"
+import { MixNode } from "./nodes/math/MixNode"
 
 export function createGraphFromInputs(nodes: NodeProps[], wires: WireProps[]): ShaderGraph {
   const graph = new ShaderGraph()
@@ -182,6 +183,9 @@ export function createGraphFromInputs(nodes: NodeProps[], wires: WireProps[]): S
     }
     if (n.typeId === NodeTypeId.MathCeil) {
       sn = new CeilNode(n.id, ShaderDataType.Vector4)
+    }
+    if (n.typeId === NodeTypeId.MathMix) {
+      sn = new MixNode(n.id, ShaderDataType.Vector4)
     }
     if (n.typeId === NodeTypeId.MathMin) {
       sn = new MinNode(n.id, ShaderDataType.Vector4)

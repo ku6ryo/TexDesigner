@@ -1,4 +1,5 @@
 .frame {
+  font-family: Arial, sans-serif;
   position: relative;
 
   .canvasContainer {
@@ -12,6 +13,21 @@
       position: absolute;
       height: calc(100% - 8px);
       width: calc(100% - 8px);
+    }
+  }
+
+  .downloadButton {
+    background-color: white;
+    border: none;
+    cursor: pointer;
+    float: right;
+    padding: 2px 4px;
+    position: relative;
+    outline: none;
+    top: 4px;
+
+    &:hover {
+      opacity: 0.8;
     }
   }
 }

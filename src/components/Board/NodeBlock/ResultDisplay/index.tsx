@@ -40,7 +40,10 @@ export function ResultDisplay({
                 <canvas ref={canvasRef} />
             </div>
             <div>
-                <button onClick={onDownloadClick}>download</button>
+                <button
+                    className={style.downloadButton}
+                    onClick={onDownloadClick}>Download as PNG
+                </button>
             </div>
         </div>
     )

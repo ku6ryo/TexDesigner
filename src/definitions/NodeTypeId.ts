@@ -42,6 +42,7 @@ export enum NodeTypeId {
   MathSign = "math_sign",
   MathFloor = "math_floor",
   MathCeil = "math_ceil",
+  MathMix = "math_mix",
   MathMin = "math_min",
   MathMax = "math_max",
   MathMod = "math_mod",

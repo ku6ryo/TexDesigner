@@ -15,14 +15,6 @@ export const inputCategory: NodeCategory = {
 
 export const inputDefs: NodeDefinition[] = [{
 /*
-  id: NodeTypeId.InputUv,
-  name: "UV",
-  category: inputCategory,
-  inSockets: [],
-  outSockets: [{
-    label: "UV",
-  }],
-}, {
   id: NodeTypeId.InputVertexPosition,
   name: "Vertex Position",
   category: inputCategory,
@@ -50,6 +42,15 @@ export const inputDefs: NodeDefinition[] = [{
     label: "Seconds",
   }],
 }, {
+*/
+  id: NodeTypeId.InputUv,
+  name: "UV",
+  category: inputCategory,
+  inSockets: [],
+  outSockets: [{
+    label: "UV",
+  }],
+}, {
   id: NodeTypeId.InputTexture,
   name: "Texture",
   category: inputCategory,
@@ -63,15 +64,20 @@ export const inputDefs: NodeDefinition[] = [{
     label: "Texture",
   }],
 }, {
-*/
   id: NodeTypeId.InputTextureSampling,
-  name: "Texture",
+  name: "Texture Sampling",
   category: inputCategory,
   inSockets: [{
     label: "Image",
     alternativeValueInputType: NodeInputType.Image,
     alternativeValue: {},
     socketHidden: true,
+  }, {
+    label: "UV",
+    alternativeValueInputType: NodeInputType.Vector2,
+    alternativeValue: {
+      vec2: new Vector2(0, 0),
+    },
   }],
   outSockets: [{
     label: "Color",
