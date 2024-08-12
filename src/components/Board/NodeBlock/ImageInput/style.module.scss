@@ -7,14 +7,16 @@
 }
 
 .imageInputRect {
-  background-color: #222;
-  height: 100px;
+  background-color: black;
+  padding-top: 100%;
   position: relative;
-  width: 100px;
+  width: 100%;
 
   img {
-    object-fit: cover;
-    height: 100px;
-    width: 100px;
+    height: 100%;
+    left: 0;
+    position: absolute;
+    top: 0;
+    width: 100%;
   }
 }
