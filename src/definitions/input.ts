@@ -9,9 +9,12 @@ import { Vector4 } from "../backend/math/Vector4"
 export const inputCategory: NodeCategory = {
   id: "input",
   label: "Input",
-  icon: "numerical",
+  icon: "text-highlight",
   color: NodeColor.Red,
 }
+
+const EMPTY_IMAGE = new Image()
+EMPTY_IMAGE.src = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
 
 export const inputDefs: NodeDefinition[] = [{
 /*
@@ -57,7 +60,9 @@ export const inputDefs: NodeDefinition[] = [{
   inSockets: [{
     label: "Image",
     alternativeValueInputType: NodeInputType.Image,
-    alternativeValue: {},
+    alternativeValue: {
+      image: EMPTY_IMAGE,
+    },
     socketHidden: true,
   }],
   outSockets: [{
@@ -70,7 +75,9 @@ export const inputDefs: NodeDefinition[] = [{
   inSockets: [{
     label: "Image",
     alternativeValueInputType: NodeInputType.Image,
-    alternativeValue: {},
+    alternativeValue: {
+      image: EMPTY_IMAGE,
+    },
     socketHidden: true,
   }, {
     label: "UV",

@@ -4,31 +4,17 @@ import {
 } from "./types"
 import { Vector2 } from "../backend/math/Vector2"
 
-export const textureCategory: NodeCategory = {
-  id: "texture",
-  label: "Texture",
-  icon: "media",
+export const noiseCategory: NodeCategory = {
+  id: "noise",
+  label: "Noise",
+  icon: "heatmap",
   color: NodeColor.Orange,
 }
 
-export const textureDefs: NodeDefinition[] = [{
-/*
-  id: NodeTypeId.TextureSample,
-  name: "Sample",
-  category: textureCategory,
-  inSockets: [{
-    label: "Texture",
-  }, {
-    label: "UV",
-  }],
-  outSockets: [{
-    label: "Color",
-  }],
-}, {
-*/
+export const noiseDefs: NodeDefinition[] = [{
   id: NodeTypeId.TexturePerlinNoise,
   name: "Parlin Noise",
-  category: textureCategory,
+  category: noiseCategory,
   inSockets: [{
     label: "Offset",
     alternativeValueInputType: NodeInputType.Vector2,
@@ -48,7 +34,7 @@ export const textureDefs: NodeDefinition[] = [{
 }, {
   id: NodeTypeId.TextureVolonoi,
   name: "Volonoi",
-  category: textureCategory,
+  category: noiseCategory,
   inSockets: [{
     label: "Offset",
     alternativeValueInputType: NodeInputType.Vector2,

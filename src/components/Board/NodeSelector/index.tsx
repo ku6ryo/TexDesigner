@@ -1,6 +1,5 @@
 import style from "./style.module.scss"
-import { Button, Icon } from "@blueprintjs/core/lib/esm";
-import { Tooltip2 } from "@blueprintjs/popover2"
+import { Icon } from "@blueprintjs/core/lib/esm";
 import { MouseEventHandler, useCallback, useEffect, useMemo, useState } from "react";
 import { NodeCategory, NodeDefinition } from "../../../definitions/types";
 
