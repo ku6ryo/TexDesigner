@@ -4,7 +4,7 @@ import { inputDefs } from "./input"
 import { NodeDefinition } from "./types"
 
 export const definitions = ([] as NodeDefinition[]).concat(
+  inputDefs,
   mathDefs,
   noiseDefs,
-  inputDefs,
-).sort((a, b) => a.name.localeCompare(b.name))
+)
