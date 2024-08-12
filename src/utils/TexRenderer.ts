@@ -62,10 +62,8 @@ export class TexRenderer {
         gl.useProgram(program)
 
         // Enable blending for the alpha transparency
-//        gl.enable(gl.BLEND);
-        //gl.blendFunc(gl.ONE, gl.ZERO);
-//        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
-        //gl.disable(gl.BLEND)
+        gl.enable(gl.BLEND);
+        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
 
         // Create a buffer for the square's vertices
         const positionBuffer = gl.createBuffer();
