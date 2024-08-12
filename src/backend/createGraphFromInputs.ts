@@ -63,6 +63,7 @@ import { RefractNode } from "./nodes/math/RefractNode"
 import { Vector4InputNode } from "./nodes/inputs/Vector4InputNode"
 import { Vector2InputNode } from "./nodes/inputs/Vector2InputNode"
 import { MixNode } from "./nodes/math/MixNode"
+import { WhiteNoise2DNode } from "./nodes/noises/WhiteNoise2DNode"
 
 export function createGraphFromInputs(nodes: NodeProps[], wires: WireProps[]): ShaderGraph {
   const graph = new ShaderGraph()
@@ -245,6 +246,9 @@ export function createGraphFromInputs(nodes: NodeProps[], wires: WireProps[]): S
     }
     if (n.typeId === NodeTypeId.NoiseWhilteNoise) {
       sn = new WhiteNoiseNode(n.id)
+    }
+    if (n.typeId === NodeTypeId.NoiseWhilteNoise2D) {
+      sn = new WhiteNoise2DNode(n.id)
     }
 
     if (sn) {

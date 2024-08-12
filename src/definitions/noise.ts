@@ -71,4 +71,18 @@ export const noiseDefs: NodeDefinition[] = [{
   outSockets: [{
     label: "Value",
   }],
+}, {
+  id: NodeTypeId.NoiseWhilteNoise2D,
+  name: "White Noise 2D",
+  category: noiseCategory,
+  inSockets: [{
+    label: "Vec2",
+    alternativeValueInputType: NodeInputType.Vector2,
+    alternativeValue: {
+      vec2: new Vector2(0, 0),
+    },
+  }],
+  outSockets: [{
+    label: "Value",
+  }],
 }]

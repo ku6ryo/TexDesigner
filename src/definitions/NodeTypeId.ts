@@ -61,4 +61,5 @@ export enum NodeTypeId {
   NoisePerlinNoise = "texture_perlin_noise",
   NoiseVolonoi = "texture_volonoi",
   NoiseWhilteNoise = "noise_whilte_noise",
+  NoiseWhilteNoise2D = "noise_whilte_noise_2d",
 }
