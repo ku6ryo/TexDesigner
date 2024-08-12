@@ -160,14 +160,14 @@ export function NodeBlock ({
                 />
               )
             })}
+            {hasResult && (
+              <RenderResultContext.Consumer>
+                {value => {
+                  return <ResultDisplay manager={value} nodeId={id} />
+                }}
+              </RenderResultContext.Consumer>
+            )}
           </div>
-          {hasResult && (
-            <RenderResultContext.Consumer>
-              {value => {
-                return <ResultDisplay manager={value} nodeId={id} />
-              }}
-            </RenderResultContext.Consumer>
-          )}
         </div>
       </foreignObject>
     </g>

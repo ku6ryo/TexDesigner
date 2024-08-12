@@ -1,18 +1,22 @@
+@import '../../../../styles/mixin.scss';
+
 .frame {
   font-family: Arial, sans-serif;
+  padding: 4px 8px;
   position: relative;
 
   .canvasContainer {
     padding-top: 100%;
     position: relative;
     width: 100%;
+    @include transparentCheckerboard(12px);
 
     canvas {
-      top: 4px;
-      left: 4px;
+      height: 100%;
       position: absolute;
-      height: calc(100% - 8px);
-      width: calc(100% - 8px);
+      top: 0;
+      left: 0;
+      width: 100%;
     }
   }
 

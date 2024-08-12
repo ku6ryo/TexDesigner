@@ -1,0 +1,10 @@
+
+
+// The value is the size of the checker blocks.
+@mixin transparentCheckerboard($value) {
+  background-color: #eee;
+  opacity: 1;
+  background-image:  repeating-linear-gradient(45deg, #ccc 25%, transparent 25%, transparent 75%, #ccc 75%, #ccc), repeating-linear-gradient(45deg, #ccc 25%, #eee 25%, #eee 75%, #ccc 75%, #ccc);
+  background-position: 0 0, $value $value;
+  background-size: #{$value * 2} #{$value * 2};
+}
