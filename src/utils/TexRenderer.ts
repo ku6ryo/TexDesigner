@@ -4,25 +4,14 @@ import { Vector4 } from "../backend/math/Vector4"
 import { ShaderGraph } from "../backend/ShaderGraph"
 
 export class TexRenderer {
-    canvas: HTMLCanvasElement
     graph: ShaderGraph | null = null
 
-    constructor() {
-        this.canvas = document.createElement("canvas")
-    }
-
-    getGlContext() {
-        const c = this.canvas.getContext("webgl")
-        if (!c) {
-            throw new Error("webgl not supported")
-        }
-        return c
-    }
-
+    width = 1024
+    height = 1024
 
     setSize(w: number, h: number) {
-        this.canvas.width = w
-        this.canvas.height = h
+        this.width = w
+        this.height = h
     }
 
     setGraph(graph: ShaderGraph) {
@@ -33,11 +22,19 @@ export class TexRenderer {
         if (!this.graph) {
             throw new Error("graph not set")
         }
+        const canvas = document.createElement("canvas")
+        canvas.width = this.width
+        canvas.height = this.height
+
+        const gl = canvas.getContext("webgl")
+        if (!gl) {
+            throw new Error("webgl not supported")
+        }
+
         // Generate and compile shaders
         const vert = this.graph.vert()
         const frag = this.graph.frag()
 
-        const gl = this.getGlContext()
         const vertShader = gl.createShader(gl.VERTEX_SHADER)!
         gl.shaderSource(vertShader, vert)
         gl.compileShader(vertShader)
@@ -53,18 +50,22 @@ export class TexRenderer {
             console.error(gl.getShaderInfoLog(fragShader))
             throw new Error("fragment shader compilation failed")
         }
-
-        // Setting up the canvas and program
-        gl.viewport(0, 0, this.canvas.width, this.canvas.height)
         const program = gl.createProgram()!
         gl.attachShader(program, vertShader)
         gl.attachShader(program, fragShader)
         gl.linkProgram(program)
+
+        // Clear the canvas with transparent pixels
+        gl.clearColor(0.0, 0.0, 0.0, 0.0);
+        gl.clear(gl.COLOR_BUFFER_BIT);
+
         gl.useProgram(program)
 
         // Enable blending for the alpha transparency
-        gl.enable(gl.BLEND);
-        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+//        gl.enable(gl.BLEND);
+        //gl.blendFunc(gl.ONE, gl.ZERO);
+//        gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
+        //gl.disable(gl.BLEND)
 
         // Create a buffer for the square's vertices
         const positionBuffer = gl.createBuffer();
@@ -83,6 +84,7 @@ export class TexRenderer {
         // Set up the position attribute
         const positionLocation = gl.getAttribLocation(program, "aPosition");
         gl.enableVertexAttribArray(positionLocation);
+        gl.bindBuffer(gl.ARRAY_BUFFER, positionBuffer);
         gl.vertexAttribPointer(positionLocation, 2, gl.FLOAT, false, 0, 0);
 
         const texcoordBuffer = gl.createBuffer();
@@ -133,25 +135,26 @@ export class TexRenderer {
                 gl.texImage2D(gl.TEXTURE_2D, level, internalFormat, format, type, value)
                 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE)
                 gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE)
-                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.NEAREST)
+                gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.NEAREST)
                 gl.uniform1i(gl.getUniformLocation(program, name), textureUnit)
             }
         })
 
-        // Clear the canvas with transparent pixels
-        gl.clearColor(0.0, 0.0, 0.0, 0.0);
-        gl.clear(gl.COLOR_BUFFER_BIT);
-
+        // Setting up the canvas and program
+        gl.viewport(0, 0, this.width, this.height)
         // Draw the square
-        gl.drawArrays(gl.TRIANGLES, 0, 6);
+        gl.drawArrays(gl.TRIANGLES, 0, 6)
 
         textures.forEach(texture => {
             gl.deleteTexture(texture)
         })
-        gl.deleteBuffer(positionBuffer);
-        gl.deleteBuffer(texcoordBuffer);
-        gl.deleteProgram(program);
-        gl.deleteShader(vertShader);
-        gl.deleteShader(fragShader);
+        gl.deleteBuffer(positionBuffer)
+        gl.deleteBuffer(texcoordBuffer)
+        gl.deleteProgram(program)
+        gl.deleteShader(vertShader)
+        gl.deleteShader(fragShader)
+
+        return canvas
     }
 }

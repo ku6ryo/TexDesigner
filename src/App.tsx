@@ -40,8 +40,8 @@ export function App() {
     if (!outputNode) {
       return
     }
-    texRenderer.render()
-    renderResultManager.setResult(outputNode.getId(), texRenderer.canvas)
+    const canvas = texRenderer.render()
+    renderResultManager.setResult(outputNode.getId(), canvas)
   })
 
   const onChange = (nodes: NodeProps[], wires: WireProps[]) => {

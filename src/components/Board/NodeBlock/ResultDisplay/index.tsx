@@ -17,7 +17,9 @@ export function ResultDisplay({
             if (!canvasRef.current) return
             canvasRef.current.width = canvas.width
             canvasRef.current.height = canvas.height
-            canvasRef.current.getContext("2d")?.drawImage(canvas, 0, 0)
+            const ctx = canvasRef.current.getContext("2d")!
+            ctx.globalCompositeOperation = 'copy'
+            ctx.drawImage(canvas, 0, 0)
         }
         manager.addListenr(nodeId, callback)
         return () => {
