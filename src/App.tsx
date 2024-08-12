@@ -3,7 +3,7 @@ import { Board } from "./components/Board";
 import { NodeProps, WireProps } from "./components/Board/types";
 import { definitions } from "./definitions";
 import { createGraphFromInputs } from "./backend/createGraphFromInputs";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import { CircularReferenceError, IncompatibleSocketConnectionError, ShaderGraph } from "./backend/ShaderGraph";
 import { RiNodeTree as NodeIcon } from "react-icons/ri"
 import packageJson from "../package.json"
@@ -16,6 +16,7 @@ import { NodeInputValue } from "./definitions/types";
 import { TexRenderer } from "./utils/TexRenderer";
 import { throttle } from "throttle-debounce";
 import { RenderResultContext, renderResultManager } from "./utils/RenderResultContext";
+import { SplashScreen } from "./components/SplashScreen";
 
 /**
  * The root component. 
@@ -24,8 +25,8 @@ export function App() {
   const graphRef = useRef<ShaderGraph | null>(null)
   const toasterRef = useRef<Toaster>(null)
   const [invalidWireId, setInvalidaWireId] = useState<string | null>(null)
+  const [showSplash, setShowSplash] = useState(true)
   const version = packageJson.version;
-  const outputContainerRef = useRef<HTMLDivElement>(null)
   const texRenderer = useMemo(() => {
     const r = new TexRenderer()
     r.setSize(2048, 2048)
@@ -114,8 +115,13 @@ export function App() {
     }
   }
 
+  const onSplashScreenComplete = () => {
+    setShowSplash(false)
+  }
+
   return (
     <>
+      {showSplash && <SplashScreen onLoadingComplete={onSplashScreenComplete}/>}
       <RenderResultContext.Provider value={renderResultManager}>
         <div className={style.logo}>
           <div className={style.title}>Tex Designer&nbsp;<NodeIcon/></div>
