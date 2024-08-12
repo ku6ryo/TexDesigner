@@ -2,6 +2,9 @@ import style from "./style.module.scss"
 import { Icon } from "@blueprintjs/core/lib/esm";
 import { MouseEventHandler, useCallback, useEffect, useMemo, useState } from "react";
 import { NodeCategory, NodeDefinition } from "../../../definitions/types";
+import { inputCategory } from "../../../definitions/input";
+import { mathCategory } from "../../../definitions/math";
+import { noiseCategory } from "../../../definitions/noise";
 
 type Props = {
   definitions: NodeDefinition[]
@@ -16,17 +19,16 @@ export function NodeSelector({
   onSelected,
 }: Props) {
   const [categories, nodeMap] = useMemo(() => {
-    const catMap = new Map<string, NodeCategory>();
     const nodeMap = new Map<string, NodeDefinition[]>();
     definitions.forEach(def => {
-      catMap.set(def.category.id, def.category)
       if (!nodeMap.has(def.category.id)) {
         nodeMap.set(def.category.id, [])
       }
       nodeMap.get(def.category.id)!.push(def)
     })
-    return [Array.from(catMap.values()), nodeMap]
+    return [[inputCategory, mathCategory, noiseCategory], nodeMap]
   }, []);
+
   const [selectedCatId, setSelectedCatId] = useState<string | null>(null);
 
   const onCategoryClick: MouseEventHandler<HTMLButtonElement> & ((e: React.MouseEvent<HTMLElement, MouseEvent>) => void) = useCallback((e) => {

@@ -1,7 +1,7 @@
 
 
 .frame {
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 0.9);
   color: rgb(224, 224, 224);
   font-size: 12px;
   border-radius: 4px;
@@ -17,7 +17,7 @@
   cursor: pointer;
 
   &:hover {
-    background-color: rgba(255, 255, 255, 0.4);
+    background-color: rgba(255, 255, 255, 0.2);
   }
 
   &:last-child {
@@ -27,7 +27,7 @@
 
 .nodes {
   border-radius: 4px;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(0, 0, 0, 0.9);
   color: rgb(224, 224, 224);
   display: grid;
   font-size: 12px;
@@ -45,7 +45,7 @@
     padding: 6px 8px;
 
     &:hover {
-      background-color: rgba(255, 255, 255, 0.4);
+      background-color: rgba(255, 255, 255, 0.2);
     }
   }
 }

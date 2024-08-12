@@ -12,7 +12,7 @@ export const noiseCategory: NodeCategory = {
 }
 
 export const noiseDefs: NodeDefinition[] = [{
-  id: NodeTypeId.TexturePerlinNoise,
+  id: NodeTypeId.NoisePerlinNoise,
   name: "Parlin Noise",
   category: noiseCategory,
   inSockets: [{
@@ -32,7 +32,7 @@ export const noiseDefs: NodeDefinition[] = [{
     label: "Value",
   }],
 }, {
-  id: NodeTypeId.TextureVolonoi,
+  id: NodeTypeId.NoiseVolonoi,
   name: "Volonoi",
   category: noiseCategory,
   inSockets: [{
@@ -56,5 +56,19 @@ export const noiseDefs: NodeDefinition[] = [{
   }],
   outSockets: [{
     label: "Distance",
+  }],
+}, {
+  id: NodeTypeId.NoiseWhilteNoise,
+  name: "White Noise",
+  category: noiseCategory,
+  inSockets: [{
+    label: "Offset",
+    alternativeValueInputType: NodeInputType.Vector2,
+    alternativeValue: {
+      vec2: new Vector2(0, 0),
+    },
+  }],
+  outSockets: [{
+    label: "Value",
   }],
 }]

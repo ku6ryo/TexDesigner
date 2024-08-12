@@ -11,10 +11,6 @@ export enum NodeTypeId {
   InputTime = "input_time",
   InputColor = "input_color",
   InputNormal = "input_normal",
-  // Built-in Materials
-  Material_Lambert = "material_lambert",
-  Material_Phong = "material_phong",
-  Material_Physical = "material_physical",
   // Math
   MathAdd = "math_add",
   MathMultiply = "math_multiply",
@@ -61,8 +57,8 @@ export enum NodeTypeId {
   MathRefract = "math_refract",
   // Output
   OutputColor = "output_color",
-  // Texture
-  TextureSample = "texture_sample",
-  TexturePerlinNoise = "texture_perlin_noise",
-  TextureVolonoi = "texture_volonoi",
+  // Noise
+  NoisePerlinNoise = "texture_perlin_noise",
+  NoiseVolonoi = "texture_volonoi",
+  NoiseWhilteNoise = "noise_whilte_noise",
 }

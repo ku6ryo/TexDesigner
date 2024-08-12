@@ -2,12 +2,14 @@ import { NodeProps, WireProps } from "../components/Board/types"
 import { ShaderDataType } from "./data_types"
 import { ShaderGraph } from "./ShaderGraph"
 import { ShaderNode } from "./ShaderNode"
+import { Wire } from "./Wire"
 import { FloatInputNode } from "./nodes/inputs/FloatInputNode"
 import { UvInputNode } from "./nodes/inputs/UvInputNode"
 import { AddNode } from "./nodes/math/AddNode"
 import { PerlinNoiseNode } from "./nodes/noises/ParlinNoiseNode"
+import { VolonoiNode } from "./nodes/noises/VolonoiNode"
+import { WhiteNoiseNode } from "./nodes/noises/WhiteNoiseNode"
 import { FragColorOutputNode } from "./nodes/outputs/FragColorOutputNode"
-import { Wire } from "./Wire"
 import { NodeTypeId } from "../definitions/NodeTypeId"
 import { SineNode } from "./nodes/math/SineNode"
 import { CosineNode } from "./nodes/math/CosineNode"
@@ -34,7 +36,6 @@ import { ArcsineNode } from "./nodes/math/ArcsineNode"
 import { ArctangentNode } from "./nodes/math/ArctangentNode"
 import { ArccosineNode } from "./nodes/math/ArccosineNode"
 import { NormalNode } from "./nodes/inputs/NormalNode"
-import { VolonoiNode } from "./nodes/noises/VolonoiNode"
 import { CrossNode } from "./nodes/math/CrossNode"
 import { NormalizeNode } from "./nodes/math/NormalizeNode"
 import { LengthNode } from "./nodes/math/LengthNode"
@@ -235,15 +236,15 @@ export function createGraphFromInputs(nodes: NodeProps[], wires: WireProps[]): S
     if (n.typeId === NodeTypeId.MathRefract) {
       sn = new RefractNode(n.id, ShaderDataType.Vector4)
     }
-    // Texture
-    if (n.typeId === NodeTypeId.TexturePerlinNoise) {
+    // Noise
+    if (n.typeId === NodeTypeId.NoisePerlinNoise) {
       sn = new PerlinNoiseNode(n.id)
     }
-    if (n.typeId === NodeTypeId.TextureSample) {
-      sn = new SampleTextureNode(n.id)
-    }
-    if (n.typeId === NodeTypeId.TextureVolonoi) {
+    if (n.typeId === NodeTypeId.NoiseVolonoi) {
       sn = new VolonoiNode(n.id)
+    }
+    if (n.typeId === NodeTypeId.NoiseWhilteNoise) {
+      sn = new WhiteNoiseNode(n.id)
     }
 
     if (sn) {

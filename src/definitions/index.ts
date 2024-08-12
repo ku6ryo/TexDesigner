@@ -7,4 +7,4 @@ export const definitions = ([] as NodeDefinition[]).concat(
   inputDefs,
   mathDefs,
   noiseDefs,
-)
+).sort((a, b) => a.name.localeCompare(b.name))
